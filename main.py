@@ -9,17 +9,24 @@ class game():
     def changeTile(self, a_grid, x, y, new_tile):
         a_grid[y][x] = new_tile
     
+    def copyGrid(self, input_grid):
+        grid_to_copy = [row.copy() for row in input_grid]
+        return grid_to_copy
+
+    
 
     def initPlayer(self):
         return player.player()
 
     def showGrid(self):
-        display_grid = self.map.copy()
+        display_grid = self.copyGrid(self.map)
         player_position = self.player.getPosition()
         self.changeTile(display_grid, player_position[0], player_position[1], self.player)
 
+        print("========display grid==========")
         for row in display_grid:
             print(row)
+        print("==============================")
     
     def setColumn(self, y, columnlist):
         i = 0
@@ -34,4 +41,13 @@ class game():
 maingrid = game()
 maingrid.showGrid()
 
-        
+maingrid.player.goUp()
+maingrid.player.goUp()
+maingrid.player.goUp()
+maingrid.player.goUp()
+maingrid.player.goUp()
+maingrid.player.goLeft()
+maingrid.player.goLeft()
+maingrid.player.goLeft()
+
+maingrid.showGrid()
