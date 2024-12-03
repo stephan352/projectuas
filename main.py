@@ -1,21 +1,37 @@
+import biome
+import player
 
-
-class grid():
+class game():
     def __init__(self):
-        self.grid = [["" for i in range(10)] for j in range(10)]
+        self.map = self.generateMap(10, 10)
+        self.player = self.initPlayer()
+    
+    def changeTile(self, a_grid, x, y, new_tile):
+        a_grid[y][x] = new_tile
+    
 
+    def initPlayer(self):
+        return player.player()
 
     def showGrid(self):
-        for row in self.grid:
+        display_grid = self.map.copy()
+        player_position = self.player.getPosition()
+        self.changeTile(display_grid, player_position[0], player_position[1], self.player)
+
+        for row in display_grid:
             print(row)
     
     def setColumn(self, y, columnlist):
         i = 0
-        for row in self.grid:
+        for row in self.map:
             row[y] = columnlist[i]
             i += 1
+    
+    def generateMap(self, length, width):
+        return [["" for i in range(length)] for j in range(width)]
+        # return [[biome.biome() for i in range(10)] for j in range(10)]
 
-x = grid()
-names = ["Alice", "Bob", "Charlie", "Diana", "Ethan", "Fiona", "George", "Hannah", "Isaac", "Julia"]
-x.setColumn(2, names)
-x.showGrid()
+maingrid = game()
+maingrid.showGrid()
+
+        
