@@ -57,5 +57,3 @@ maingame.player.goLeft()
 maingame.player.goLeft()
 
 maingame.display()
-maingame.map.displayMap()
-
