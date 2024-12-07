@@ -1,5 +1,6 @@
 class player():
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.position = [5,8]
         self.health = 100
 

@@ -1,5 +1,9 @@
+import biome
+import random
+
 class Map():
-    def __init__(self):
+    def __init__(self, game):
+        self.game = game
         self.map = self.generateMap(10, 10)
     
     def setColumn(self, y, columnlist):
@@ -11,10 +15,13 @@ class Map():
     def getMap(self):
         grid_to_copy = [row.copy() for row in self.map]
         return grid_to_copy
-
+    
+    def generateARandomBiome(self):
+        return random.choice(biome.biomeTypes)(self.game)
+    
     def generateMap(self, length, width):
-        return [["" for i in range(length)] for j in range(width)]
-        # return [[biome.biome() for i in range(10)] for j in range(10)]
+        return [[self.generateARandomBiome() for i in range(length)] for j in range(width)]
+        # return [["" for i in range(length)] for j in range(width)]
     
     def displayMap(self):
         print("=============Map==============")

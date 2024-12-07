@@ -1,15 +1,15 @@
-import biome
+# import biome
 import player
 import map
     
 
 class Game():
     def __init__(self):
-        self.map = map.Map()
+        self.map = map.Map(self)
         self.player = self.initPlayer()
 
     def initPlayer(self):
-        return player.player()
+        return player.player(self)
     
     def display(self):
         display_grid = self.map.getMap()
