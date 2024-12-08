@@ -17,57 +17,68 @@ class Game():
         display_grid = self.map.getMap()
         player_position = self.player.getPosition()
         display_grid[player_position[1]][player_position[0]] = self.player
-        print("========display grid==========")
-        for row in display_grid:
-            print(row)
-        print("==============================")
+        # print("========display grid==========")
+        # for row in display_grid:
+        #     print(row)
+        # print("==============================")
         return display_grid
     
-    # def displayToTerminal(self):
-    #     display_grid = self.generateDisplayList()
-    #     print("========display grid==========")
-    #     for row in display_grid:
-    #         print(row)
-    #     print("==============================")
+    def getTupleRowDisplay(self):  #generate tuple for tkinter display
+        return [tuple([element.getIcon() for element in row]) for row in self.generateDisplayList()]
     
-    def getTupleRowDisplay(self):
-        result = [tuple([element.getIcon() for element in row]) for row in self.generateDisplayList()]
-        return result #generate tuple for tkinter display
-    
-    # def getTkinterDisplayString(self):
-    #     display_grid = self.map.getMap()
-    #     player_position = self.player.getPosition()
-    #     display_grid[player_position[1]][player_position[0]] = self.player
-    #     output_string = ""
-
-    #     for row in display_grid:
-    #         for element in row:
-    #             output_string += element.getIcon()
-    #         output_string += "\n"
-    #     return output_string
-    
-    # def displayToTkinter(self, root):
-    #     game_display = tkinter.Text(root)
-    #     game_display.pack()
-    #     game_display.insert(tkinter.END, self.getTkinterDisplayString())
+    def updateScreen(self, table):
+        for row in self.getTupleRowDisplay():
+            table.insert(parent="", index=tkinter.END, values=row)
 
 
+# def insertToTable(table, listOfTuples):
+#     for row in listOfTuples:
+#         table.insert(parent="", index=tkinter.END, values=row)
+
+
+def onLeftClick(table, game):
+    game.player.goLeft()
+    table.delete(*table.get_children())
+    maingame.updateScreen(table)
+
+def onRightCLick(table, game):
+    game.player.goRight()
+    table.delete(*table.get_children())
+    maingame.updateScreen(table)
+
+def onUpClick(table, game):
+    game.player.goUp()
+    table.delete(*table.get_children())
+    maingame.updateScreen(table)
+
+def onDownClick(table, game):
+    game.player.goDown()
+    table.delete(*table.get_children())
+    maingame.updateScreen(table)
 
 maingame = Game()
 
 root = tkinter.Tk()
+# child = tkinter.Toplevel(root)
 
 map_dimension = maingame.map.getMapDimensions()
 map_columns = tuple([str(i) for i in range(map_dimension[0])])
-table = tkinter.ttk.Treeview(root, columns= map_columns)
-table.pack(expand=tkinter.YES, fill=tkinter.BOTH)
-table.column("#0", minwidth=0, width=0, stretch=tkinter.NO)
+table = tkinter.ttk.Treeview(root, columns= map_columns, show="tree")
+# table.pack(expand=tkinter.YES, fill=tkinter.BOTH)
+table.column("#0", minwidth=0, width=0)
+table.grid(row=0, column=0, columnspan=3)
 for column_element in map_columns:
-    table.column(column_element, width=20, stretch=tkinter.NO)
+    table.column(column_element, width=20)
+maingame.updateScreen(table)
 
-tupleDisplayList = maingame.getTupleRowDisplay()
-for row in tupleDisplayList:
-    table.insert(parent="", index=tkinter.END, values=row)
+leftButton = tkinter.Button(root, text="Left", command=lambda: onLeftClick(table,maingame)).grid(row=2, column=0)
+rightButton = tkinter.Button(root, text="Right", command=lambda: onRightCLick(table,maingame)).grid(row=2, column=2)
+upButton = tkinter.Button(root, text="Up", command=lambda: onUpClick(table,maingame)).grid(row=1, column=1)
+downButton = tkinter.Button(root, text="Down", command=lambda: onDownClick(table,maingame)).grid(row=3, column=1)
+
+# leftButton.pack()
+
+# root.bind("a", lambda:onAPress(table, maingame))
 
 # game_display = tkinter.Text(root)
 # game_display.pack()

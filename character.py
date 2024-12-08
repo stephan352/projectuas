@@ -13,19 +13,31 @@ class Character():
     
     def showPosition(self):
         print(self.position)
+    
 
+    def goToPosition(self, x, y):
+        map_dimensionX = self.game.map.getMapDimensions()[0]
+        map_dimensionY = self.game.map.getMapDimensions()[1]
+        if 0 <= x < map_dimensionX and 0 <= y < map_dimensionY:
+            self.position = [x, y]
+        else:
+            print("Out of boundaries!")
 
     def goLeft(self):
-        self.position[0] -= 1
+        self.goToPosition(self.position[0] - 1, self.position[1])
+        # self.position[0] -= 1
 
     def goRight(self):
-        self.position[0] += 1
+        self.goToPosition(self.position[0] + 1, self.position[1])
+        # self.position[0] += 1
 
     def goUp(self):
-        self.position[1] -= 1
+        self.goToPosition(self.position[0], self.position[1] - 1)
+        # self.position[1] -= 1
 
     def goDown(self):
-        self.position[1] += 1
+        self.goToPosition(self.position[0], self.position[1] + 1)
+        # self.position[1] += 1
 
 class Enemy(Character):
     def __init__(self, game):
