@@ -1,7 +1,7 @@
 class Character():
     def __init__(self, game):
         self.game = game
-        self.position = [0,0]
+        self.position = [9,0]
         self.health = 100
         self.icon = ""
     
