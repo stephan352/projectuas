@@ -6,6 +6,9 @@ class Map():
         self.game = game
         self.map = self.generateMap(10, 10)
     
+    def getMapDimensions(self):
+        return (len(self.map[0]),len(self.map))
+    
     def setColumn(self, y, columnlist):
         i = 0
         for row in self.map:
