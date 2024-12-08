@@ -3,7 +3,7 @@ import tkinter.ttk
 import player
 import map
 import tkinter
-    
+
 
 class Game():
     def __init__(self):
@@ -27,6 +27,7 @@ class Game():
         return [tuple([element.getIcon() for element in row]) for row in self.generateDisplayList()]
     
     def updateScreen(self, table):
+        table.delete(*table.get_children())
         for row in self.getTupleRowDisplay():
             table.insert(parent="", index=tkinter.END, values=row)
 
@@ -35,45 +36,46 @@ class Game():
 #     for row in listOfTuples:
 #         table.insert(parent="", index=tkinter.END, values=row)
 
-
-def onLeftClick(table, game):
-    game.player.goLeft()
-    table.delete(*table.get_children())
-    maingame.updateScreen(table)
-
-def onRightCLick(table, game):
-    game.player.goRight()
-    table.delete(*table.get_children())
-    maingame.updateScreen(table)
-
-def onUpClick(table, game):
-    game.player.goUp()
-    table.delete(*table.get_children())
-    maingame.updateScreen(table)
-
-def onDownClick(table, game):
-    game.player.goDown()
-    table.delete(*table.get_children())
-    maingame.updateScreen(table)
-
 maingame = Game()
 
 root = tkinter.Tk()
 # child = tkinter.Toplevel(root)
 
+screenframe = tkinter.Frame(root)
+screenframe.grid(row=0,column=0,columnspan=3)
+screenscroll = tkinter.Scrollbar(screenframe)
+screenscroll.pack(side=tkinter.RIGHT, fill=tkinter.Y)
 map_dimension = maingame.map.getMapDimensions()
 map_columns = tuple([str(i) for i in range(map_dimension[0])])
-table = tkinter.ttk.Treeview(root, columns= map_columns, show="tree")
+table = tkinter.ttk.Treeview(screenframe, columns= map_columns, show="tree", yscrollcommand=screenscroll.set)
+screenscroll.config(command=table.yview)
 # table.pack(expand=tkinter.YES, fill=tkinter.BOTH)
 table.column("#0", minwidth=0, width=0)
-table.grid(row=0, column=0, columnspan=3)
+table.pack()
 for column_element in map_columns:
     table.column(column_element, width=20)
-maingame.updateScreen(table)
+for row in maingame.getTupleRowDisplay():
+    table.insert(parent="", index=tkinter.END, values=row)
 
+
+def onLeftClick(table, game):
+    game.player.goLeft()
+    game.updateScreen(table)
 leftButton = tkinter.Button(root, text="Left", command=lambda: onLeftClick(table,maingame)).grid(row=2, column=0)
+
+def onRightCLick(table, game):
+    game.player.goRight()
+    game.updateScreen(table)
 rightButton = tkinter.Button(root, text="Right", command=lambda: onRightCLick(table,maingame)).grid(row=2, column=2)
+
+def onUpClick(table, game):
+    game.player.goUp()
+    game.updateScreen(table)
 upButton = tkinter.Button(root, text="Up", command=lambda: onUpClick(table,maingame)).grid(row=1, column=1)
+
+def onDownClick(table, game):
+    game.player.goDown()
+    game.updateScreen(table)
 downButton = tkinter.Button(root, text="Down", command=lambda: onDownClick(table,maingame)).grid(row=3, column=1)
 
 # leftButton.pack()
