@@ -10,6 +10,8 @@ class Game():
         self.root = root
         self.map = map.Map(self)
         self.player = self.initPlayer()
+        self.output = tkinter.StringVar()
+        self.output.set("test")
 
         self.initRoot()
 
@@ -35,7 +37,8 @@ class Game():
             self.table.insert(parent="", index=tkinter.END, values=row)
     
     def initRoot(self):
-        screenframe = tkinter.Frame(root)
+        leftframe = tkinter.Frame(root).grid(row=0, column=0)
+        screenframe = tkinter.Frame(leftframe)
         screenframe.grid(row=0,column=0,columnspan=3)
         screenscroll = tkinter.Scrollbar(screenframe)
         screenscroll.pack(side=tkinter.RIGHT, fill=tkinter.Y)
@@ -50,13 +53,20 @@ class Game():
         for row in self.getTupleRowDisplay():
             self.table.insert(parent="", index=tkinter.END, values=row)
         
-        tkinter.Button(root, text="Left", command=self.onLeftClick).grid(row=2, column=0)
-        tkinter.Button(root, text="Right", command=self.onRightClick).grid(row=2, column=2)
-        tkinter.Button(root, text="Up", command=self.onUpClick).grid(row=1, column=1)
-        tkinter.Button(root, text="Down", command=self.onDownClick).grid(row=3, column=1)
+        buttonframe = tkinter.Frame(leftframe, bg="purple").grid(row=1,column=0)
+        tkinter.Label(buttonframe, textvariable=self.output).grid(row=2, column=0, columnspan=3)
+        tkinter.Button(buttonframe, text="Left", command=self.onLeftClick).grid(row=4, column=0)
+        tkinter.Button(buttonframe, text="Right", command=self.onRightClick).grid(row=4, column=2)
+        tkinter.Button(buttonframe, text="Up", command=self.onUpClick).grid(row=3, column=1)
+        tkinter.Button(buttonframe, text="Down", command=self.onDownClick).grid(row=5, column=1)
+
+        tkinter.Button(buttonframe, text="test", command=lambda: self.setOutput("Hello World!")).grid(row=0, column=3)
     
     def onButtonClick(self):
         self.updateScreen()
+    
+    def setOutput(self, outputstring):
+        self.output.set("Hello world!")
     
 
     def onLeftClick(self):
