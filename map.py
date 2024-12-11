@@ -2,9 +2,9 @@ import biome
 import random
 
 class Map():
-    def __init__(self, game):
+    def __init__(self, game, x, y):
         self.game = game
-        self.map = self.generateMap(14, 14)
+        self.map = self.generateMap(x, y)
     
     def getMapDimensions(self):
         return (len(self.map[0]),len(self.map))
