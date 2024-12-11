@@ -37,16 +37,16 @@ class Game():
         if playerXposition < 5:
             croppedX = [row[0:9] for row in self.generateRawScreen()]
         elif playerXposition > self.map.getMapDimensions()[0] - 5:
-            croppedX = [row[self.map.getMapDimensions()[0] - 8:] for row in self.generateRawScreen()]
+            croppedX = [row[self.map.getMapDimensions()[0] - 9:] for row in self.generateRawScreen()]
         else:
             croppedX = [row[playerXposition - 4:playerXposition + 5] for row in self.generateRawScreen()]
         
         if playerYposition < 5:
             cropped = croppedX[0:9]
         elif playerYposition > self.map.getMapDimensions()[1] - 5:
-            cropped = croppedX[self.map.getMapDimensions()[1] - 8:]
+            cropped = croppedX[self.map.getMapDimensions()[1] - 9:]
         else:
-            cropped = croppedX[playerYposition - 4:playerYposition + 4]
+            cropped = croppedX[playerYposition - 4:playerYposition + 5]
         
         return tuple(cropped)
 
