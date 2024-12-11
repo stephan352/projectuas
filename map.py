@@ -4,7 +4,7 @@ import random
 class Map():
     def __init__(self, game):
         self.game = game
-        self.map = self.generateMap(10, 10)
+        self.map = self.generateMap(100, 100)
     
     def getMapDimensions(self):
         return (len(self.map[0]),len(self.map))
@@ -16,8 +16,11 @@ class Map():
             i += 1
     
     def getMap(self):
-        grid_to_copy = [row.copy() for row in self.map]
-        return grid_to_copy
+        return [row.copy() for row in self.map]
+    
+    def getMapIcons(self):
+        grid_to_copy = self.getMap()
+        return [[element.getIcon() for element in row] for row in grid_to_copy]
     
     def generateARandomBiome(self):
         return random.choice(biome.biomeTypes)(self.game)
