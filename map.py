@@ -4,7 +4,7 @@ import random
 class Map():
     def __init__(self, game):
         self.game = game
-        self.map = self.generateMap(100, 100)
+        self.map = self.generateMap(14, 14)
     
     def getMapDimensions(self):
         return (len(self.map[0]),len(self.map))

@@ -35,43 +35,60 @@ class Game():
         playerXposition = self.player.getPosition()[0]
         playerYposition = self.player.getPosition()[1]
         if playerXposition < 5:
-            if playerYposition < 5:
-                croppedY = self.generateRawScreen()[0:8]
-                screen = [row[0:9] for row in croppedY]
-                return tuple(screen)
-            elif playerYposition > self.map.getMapDimensions()[1] - 5:
-                croppedY = self.generateRawScreen()[self.map.getMapDimensions()[1] - 8:]
-                screen = [row[0:9] for row in croppedY]
-                return tuple(screen)
-            else:
-                croppedY = self.generateRawScreen()[playerYposition - 4:playerYposition + 4]
-                screen = [row[0:9] for row in croppedY]
-                return tuple(screen)
+            croppedX = [row[0:9] for row in self.generateRawScreen()]
         elif playerXposition > self.map.getMapDimensions()[0] - 5:
-            if playerYposition < 5:
-                croppedY = self.generateRawScreen()[0:8]
-                screen = [row[self.map.getMapDimensions()[0] - 8:] for row in croppedY]
-                return tuple(screen)
-            elif playerYposition > self.map.getMapDimensions()[1] - 5:
-                croppedY = self.generateRawScreen()[self.map.getMapDimensions()[1] - 8:]
-                screen = [row[self.map.getMapDimensions()[0] - 8:] for row in croppedY]
-                return tuple(screen)
-            else:
-                croppedY = self.generateRawScreen()[playerYposition - 4:playerYposition + 4]
-                screen = [row[self.map.getMapDimensions()[0] - 8:] for row in croppedY]
-                return tuple(screen)
-        elif playerYposition < 5:
-            croppedY = croppedY = self.generateRawScreen()[0:8]
-            screen = [row[playerXposition - 4: playerXposition + 4] for row in croppedY]
-            return tuple(screen)
-        elif playerYposition > self.map.getMapDimensions()[1] - 5:
-            croppedY = self.generateRawScreen()[self.map.getMapDimensions()[1] - 8:]
-            screen = [row[playerXposition - 4: playerXposition + 4] for row in croppedY]
-            return tuple(screen)
+            croppedX = [row[self.map.getMapDimensions()[0] - 8:] for row in self.generateRawScreen()]
         else:
-            croppedY = self.generateRawScreen()[playerYposition - 4:playerYposition + 4]
-            screen = [row[playerXposition - 4:playerXposition + 4] for row in croppedY]
-            return tuple(screen)
+            croppedX = [row[playerXposition - 4:playerXposition + 5] for row in self.generateRawScreen()]
+        
+        if playerYposition < 5:
+            cropped = croppedX[0:9]
+        elif playerYposition > self.map.getMapDimensions()[1] - 5:
+            cropped = croppedX[self.map.getMapDimensions()[1] - 8:]
+        else:
+            cropped = croppedX[playerYposition - 4:playerYposition + 4]
+        
+        return tuple(cropped)
+
+
+        # if playerXposition < 5:
+        #     if playerYposition < 5:
+        #         croppedY = self.generateRawScreen()[0:8]
+        #         screen = [row[0:9] for row in croppedY]
+        #         return tuple(screen)
+        #     elif playerYposition > self.map.getMapDimensions()[1] - 5:
+        #         croppedY = self.generateRawScreen()[self.map.getMapDimensions()[1] - 8:]
+        #         screen = [row[0:9] for row in croppedY]
+        #         return tuple(screen)
+        #     else:
+        #         croppedY = self.generateRawScreen()[playerYposition - 4:playerYposition + 4]
+        #         screen = [row[0:9] for row in croppedY]
+        #         return tuple(screen)
+        # elif playerXposition > self.map.getMapDimensions()[0] - 5:
+        #     if playerYposition < 5:
+        #         croppedY = self.generateRawScreen()[0:8]
+        #         screen = [row[self.map.getMapDimensions()[0] - 8:] for row in croppedY]
+        #         return tuple(screen)
+        #     elif playerYposition > self.map.getMapDimensions()[1] - 5:
+        #         croppedY = self.generateRawScreen()[self.map.getMapDimensions()[1] - 8:]
+        #         screen = [row[self.map.getMapDimensions()[0] - 8:] for row in croppedY]
+        #         return tuple(screen)
+        #     else:
+        #         croppedY = self.generateRawScreen()[playerYposition - 4:playerYposition + 4]
+        #         screen = [row[self.map.getMapDimensions()[0] - 8:] for row in croppedY]
+        #         return tuple(screen)
+        # elif playerYposition < 5:
+        #     croppedY = croppedY = self.generateRawScreen()[0:8]
+        #     screen = [row[playerXposition - 4: playerXposition + 4] for row in croppedY]
+        #     return tuple(screen)
+        # elif playerYposition > self.map.getMapDimensions()[1] - 5:
+        #     croppedY = self.generateRawScreen()[self.map.getMapDimensions()[1] - 8:]
+        #     screen = [row[playerXposition - 4: playerXposition + 4] for row in croppedY]
+        #     return tuple(screen)
+        # else:
+        #     croppedY = self.generateRawScreen()[playerYposition - 4:playerYposition + 4]
+        #     screen = [row[playerXposition - 4:playerXposition + 4] for row in croppedY]
+        #     return tuple(screen)
     
     def updateScreen(self):
         self.table.delete(*self.table.get_children())
