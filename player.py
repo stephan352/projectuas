@@ -28,4 +28,5 @@ class player(character.Character):
         return str(self.getCurrentBiome().getType())
     
     def attack(self, opponent):
+        self.game.setCombatOutput1("Attacked enemy for " + str(self.damage))
         opponent.recieveAttack(self.damage)

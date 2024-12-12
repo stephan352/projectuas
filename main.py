@@ -129,6 +129,8 @@ class Game():
         self.player.getCurrentBiome().enemies.pop(0)
         if not self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies cleared!")
+            # self.setCombatOutput1("-")
+            # self.setCombatOutput2("-")
             self.player.incombat = False
         self.update()
     

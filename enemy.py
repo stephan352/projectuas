@@ -4,7 +4,7 @@ import random
 class Enemy(character.Character):
     def __init__(self, game):
         super().__init__(game)
-        self.dodge = 20
+        self.dodge = 10
         self.damage = 5
     
     def counterAttack(self, player):
