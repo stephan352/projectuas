@@ -8,6 +8,9 @@ class Biome():
         self.icon = ""
         self.enemies = self.generateEnemies()
     
+    def getType(self):
+        return self.__class__.__name__
+    
     def getIcon(self):
         return self.icon
     
@@ -23,7 +26,6 @@ class Biome():
     
     def generateEnemies(self):
         randompercentage = random.randint(0, 100)
-        print("randompercentage: ", randompercentage)
         if randompercentage < 70:
             return []
         else:
@@ -35,8 +37,8 @@ class Desert(Biome):
         super().__init__(game)
         self.icon = "🏜️"
     
-    def getType(self):
-        return "desert"
+    # def getType(self):
+    #     return "Desert"
         
 
 class Jungle(Biome):
@@ -44,7 +46,7 @@ class Jungle(Biome):
         super().__init__(game)
         self.icon = "🌴"
     
-    def getType(self):
-        return "jungle"
+    # def getType(self):
+    #     return "Jungle"
 
 biomeTypes = Biome.__subclasses__()

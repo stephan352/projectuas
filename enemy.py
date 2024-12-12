@@ -7,14 +7,14 @@ class Enemy(character.Character):
     
 class GiantScorpion(Enemy):
     # nativeTo = biome.Desert
-    nativeTo = "desert"
+    nativeTo = "Desert"
     def __init__(self, game):
         super().__init__(game)
         # self.nativeTo = biome.Desert
 
 class Gorilla(Enemy):
     # nativeTo = biome.Jungle
-    nativeTo = "jungle"
+    nativeTo = "Jungle"
     def __init__(self, game):
         super().__init__(game)
         # self.nativeTo = biome.Jungle

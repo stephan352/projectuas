@@ -44,6 +44,7 @@ class Game():
         croppedScreen = self.getCroppedScreenTuple()
         for row in croppedScreen:
             self.table.insert(parent="", index=tkinter.END, values=row)
+        
     
     def initRoot(self):
         sizeoptions = ["small", "medium", "large"]
@@ -66,7 +67,7 @@ class Game():
         print("Map dimensions: ", self.map.getMapDimensions())
         self.player = self.initPlayer()
         self.output = tkinter.StringVar()
-        self.output.set("test")
+        self.output.set("")
         
         gamewindow = tkinter.Toplevel()
         screenframe = tkinter.Frame(gamewindow)
@@ -83,16 +84,27 @@ class Game():
             self.table.insert(parent="", index=tkinter.END, values=row)
         
         tkinter.Label(gamewindow, textvariable=self.output).grid(row=2, column=0, columnspan=3)
+
         tkinter.Button(gamewindow, text="Left", command=self.onLeftClick).grid(row=4, column=0)
         tkinter.Button(gamewindow, text="Right", command=self.onRightClick).grid(row=4, column=2)
         tkinter.Button(gamewindow, text="Up", command=self.onUpClick).grid(row=3, column=1)
         tkinter.Button(gamewindow, text="Down", command=self.onDownClick).grid(row=5, column=1)
 
-        tkinter.Button(gamewindow, text="test", command=lambda: self.setOutput("Hello World!")).grid(row=0, column=3)
+        self.playerhealth = tkinter.StringVar()
+        self.playerbiome = tkinter.StringVar()
+        self.updateHUD()
+
+        tkinter.Label(gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
+        tkinter.Label(gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
     
-    def onButtonClick(self):
+    def updateHUD(self):
+        self.playerhealth.set("Player health: " + str(self.player.health))
+        self.playerbiome.set("Player biome: " + str(self.player.getCurrontBiomeDisplay()))
+    
+    def update(self):
         print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
         self.updateScreen()
+        self.updateHUD()
     
     def setOutput(self, outputstring):
         self.output.set(outputstring)
@@ -100,19 +112,19 @@ class Game():
 
     def onLeftClick(self):
         self.player.goLeft()
-        self.onButtonClick()
+        self.update()
     
     def onRightClick(self):
         self.player.goRight()
-        self.onButtonClick()
+        self.update()
     
     def onUpClick(self):
         self.player.goUp()
-        self.onButtonClick()
+        self.update()
     
     def onDownClick(self):
         self.player.goDown()
-        self.onButtonClick()
+        self.update()
 
 root = tkinter.Tk()
 maingame = Game(root)
