@@ -7,6 +7,8 @@ class player(character.Character):
         self.position = [0,0]
         self.icon = "🏃"
         self.incombat = False
+
+        self.damage = 150
     
     def goToPosition(self, x, y):
         if self.incombat:
@@ -26,4 +28,4 @@ class player(character.Character):
         return str(self.getCurrentBiome().getType())
     
     def attack(self, opponent):
-        opponent.recieveAttack(150)
+        opponent.recieveAttack(self.damage)

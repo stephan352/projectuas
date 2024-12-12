@@ -5,15 +5,16 @@ class Enemy(character.Character):
     def __init__(self, game):
         super().__init__(game)
         self.dodge = 20
+        self.damage = 5
     
     def counterAttack(self, player):
-        player.recieveAttack(5)
+        player.recieveAttack(self.damage)
     
     def recieveAttack(self, damage):
         if random.randint(0, 100) <= self.dodge:
             self.game.setCombatOutput1(self.__class__.__name__ + " dodged!")
             self.counterAttack(self.game.player)
-            self.game.setCombatOutput2(self.__class__.__name__ + " attacked for 5")
+            self.game.setCombatOutput2(self.__class__.__name__ + " attacked for " + str(self.damage))
         else:
             self.health -= damage
         if self.health <= 0:
