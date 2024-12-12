@@ -55,6 +55,7 @@ class Game():
         tkinter.Button(self.root, text="Start game!", command=self.startGame).grid(row=1,column=0)
     
     def startGame(self):
+        self.enemies = []
         size = self.selectedsize.get()
         if size == "small":
             self.map = map.Map(self, 20, 50)
@@ -90,6 +91,7 @@ class Game():
         tkinter.Button(gamewindow, text="test", command=lambda: self.setOutput("Hello World!")).grid(row=0, column=3)
     
     def onButtonClick(self):
+        print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
         self.updateScreen()
     
     def setOutput(self, outputstring):

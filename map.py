@@ -34,3 +34,6 @@ class Map():
         for row in self.map:
             print(row)
         print("==============================")
+    
+    def getBiomeAt(self, x, y):
+        return self.map[y][x]
