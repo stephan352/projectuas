@@ -94,20 +94,29 @@ class Game():
         self.playerbiome = tkinter.StringVar()
         self.enemiesleft = tkinter.StringVar()
         self.enemyhealth = tkinter.StringVar()
-        self.updateHUD()
 
         tkinter.Label(gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
         tkinter.Label(gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
         tkinter.Label(gamewindow, textvariable=self.enemiesleft).grid(row=1, column=4)
         tkinter.Label(gamewindow, textvariable=self.enemyhealth).grid(row=2, column=4)
 
-        tkinter.Button(gamewindow, text="Defeat enemy").grid(row=3, column=4)
+        tkinter.Button(gamewindow, text="Attack enemy", command=self.onAttackClick).grid(row=3, column=4)
+
+        self.update()
     
     def setOutput(self, outputstring):
         self.output.set(outputstring)
     
     def initiateCombat(self):
         self.player.incombat = True
+    
+    def onEnemyDeath(self):
+        self.setOutput(self.targetenemy.__class__.__name__ + " is dead!")
+        self.player.getCurrentBiome().enemies.pop(0)
+        if not self.player.getCurrentBiome().enemies:
+            self.setOutput("Enemies cleared!")
+            self.player.incombat = False
+        self.update()
     
     def check(self):
         if self.player.getCurrentBiome().enemies:
@@ -117,13 +126,13 @@ class Game():
     def updateHUD(self):
         self.playerhealth.set("Player health: " + str(self.player.health))
         self.playerbiome.set("Player biome: " + str(self.player.getCurrontBiomeDisplay()))
-        currentbiomeenemies = self.player.getCurrentBiome().enemies
-        if currentbiomeenemies:
-            self.enemiesleft.set("Enemiesleft: " + str(len(currentbiomeenemies)))
-            self.enemyhealth.set("Attacking enemy health: " + str(currentbiomeenemies[0].health))
+        if self.player.getCurrentBiome().enemies:
+            self.targetenemy = self.player.getCurrentBiome().enemies[0]
+            self.enemiesleft.set("Enemiesleft: " + str(len(self.player.getCurrentBiome().enemies)))
+            self.enemyhealth.set(self.targetenemy.__class__.__name__ + " health: " + str(self.targetenemy.health))
         else:
-            self.enemiesleft.set("Enemiesleft: -")
-            self.enemyhealth.set("Attacking enemy health: -")
+            self.enemiesleft.set("No enemies")
+            self.enemyhealth.set("-")
     
     def update(self):
         print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
@@ -147,6 +156,11 @@ class Game():
     
     def onDownClick(self):
         self.player.goDown()
+        self.update()
+    
+    def onAttackClick(self):
+        if self.player.getCurrentBiome().enemies:
+            self.player.attack(self.targetenemy, 150)
         self.update()
 
 root = tkinter.Tk()

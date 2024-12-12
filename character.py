@@ -1,6 +1,7 @@
 class Character():
     def __init__(self, game):
         self.game = game
+        self.isAlive = True
         self.position = [0,0]
         self.health = 100
         self.icon = ""
@@ -34,6 +35,15 @@ class Character():
 
     def goDown(self):
         self.goToPosition(self.position[0], self.position[1] + 1)
+    
+    def recieveAttack(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.isAlive = False
+    
+    def attack(self, opponent, damage):
+        opponent.recieveAttack(damage)
+
 
 class Enemy(Character):
     def __init__(self, game):

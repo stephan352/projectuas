@@ -5,6 +5,12 @@ class Enemy(character.Character):
     def __init__(self, game):
         super().__init__(game)
     
+    def recieveAttack(self, damage):
+        self.health -= damage
+        if self.health <= 0:
+            self.isAlive = False
+            self.game.onEnemyDeath()
+    
 class GiantScorpion(Enemy):
     # nativeTo = biome.Desert
     nativeTo = "Desert"
