@@ -40,11 +40,3 @@ class Character():
         self.health -= damage
         if self.health <= 0:
             self.isAlive = False
-    
-    def attack(self, opponent, damage):
-        opponent.recieveAttack(damage)
-
-
-class Enemy(Character):
-    def __init__(self, game):
-        super().__init__(game)

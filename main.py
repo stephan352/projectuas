@@ -92,20 +92,34 @@ class Game():
 
         self.playerhealth = tkinter.StringVar()
         self.playerbiome = tkinter.StringVar()
+
+        self.combatoutput1 = tkinter.StringVar()
+        self.combatoutput2 = tkinter.StringVar()
+
         self.enemiesleft = tkinter.StringVar()
         self.enemyhealth = tkinter.StringVar()
 
         tkinter.Label(gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
         tkinter.Label(gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
-        tkinter.Label(gamewindow, textvariable=self.enemiesleft).grid(row=1, column=4)
-        tkinter.Label(gamewindow, textvariable=self.enemyhealth).grid(row=2, column=4)
 
-        tkinter.Button(gamewindow, text="Attack enemy", command=self.onAttackClick).grid(row=3, column=4)
+        tkinter.Label(gamewindow, textvariable=self.combatoutput1).grid(row=1, column=4)
+        tkinter.Label(gamewindow, textvariable=self.combatoutput2).grid(row=2, column=4)
+
+        tkinter.Label(gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4)
+        tkinter.Label(gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4)
+
+        tkinter.Button(gamewindow, text="Attack enemy", command=self.onAttackClick).grid(row=5, column=4)
 
         self.update()
     
     def setOutput(self, outputstring):
         self.output.set(outputstring)
+    
+    def setCombatOutput1(self, outputstring):
+        self.combatoutput1.set(outputstring)
+    
+    def setCombatOutput2(self, outputstring):
+        self.combatoutput2.set(outputstring)
     
     def initiateCombat(self):
         self.player.incombat = True
@@ -160,7 +174,7 @@ class Game():
     
     def onAttackClick(self):
         if self.player.getCurrentBiome().enemies:
-            self.player.attack(self.targetenemy, 150)
+            self.player.attack(self.targetenemy)
         self.update()
 
 root = tkinter.Tk()

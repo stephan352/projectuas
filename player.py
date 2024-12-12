@@ -24,3 +24,6 @@ class player(character.Character):
     
     def getCurrontBiomeDisplay(self):
         return str(self.getCurrentBiome().getType())
+    
+    def attack(self, opponent):
+        opponent.recieveAttack(150)
