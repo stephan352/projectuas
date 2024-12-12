@@ -26,7 +26,7 @@ class Biome():
     
     def generateEnemies(self):
         randompercentage = random.randint(0, 100)
-        if randompercentage < 70:
+        if randompercentage < 90:
             return []
         else:
             numberofenemies = random.randint(1,2)

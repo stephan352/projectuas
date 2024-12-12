@@ -92,22 +92,45 @@ class Game():
 
         self.playerhealth = tkinter.StringVar()
         self.playerbiome = tkinter.StringVar()
+        self.enemiesleft = tkinter.StringVar()
+        self.enemyhealth = tkinter.StringVar()
         self.updateHUD()
 
         tkinter.Label(gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
         tkinter.Label(gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
-    
-    def updateHUD(self):
-        self.playerhealth.set("Player health: " + str(self.player.health))
-        self.playerbiome.set("Player biome: " + str(self.player.getCurrontBiomeDisplay()))
-    
-    def update(self):
-        print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
-        self.updateScreen()
-        self.updateHUD()
+        tkinter.Label(gamewindow, textvariable=self.enemiesleft).grid(row=1, column=4)
+        tkinter.Label(gamewindow, textvariable=self.enemyhealth).grid(row=2, column=4)
+
+        tkinter.Button(gamewindow, text="Defeat enemy").grid(row=3, column=4)
     
     def setOutput(self, outputstring):
         self.output.set(outputstring)
+    
+    def initiateCombat(self):
+        self.player.incombat = True
+    
+    def check(self):
+        if self.player.getCurrentBiome().enemies:
+            self.setOutput("Enemies here!")
+            self.initiateCombat()
+
+    def updateHUD(self):
+        self.playerhealth.set("Player health: " + str(self.player.health))
+        self.playerbiome.set("Player biome: " + str(self.player.getCurrontBiomeDisplay()))
+        currentbiomeenemies = self.player.getCurrentBiome().enemies
+        if currentbiomeenemies:
+            self.enemiesleft.set("Enemiesleft: " + str(len(currentbiomeenemies)))
+            self.enemyhealth.set("Attacking enemy health: " + str(currentbiomeenemies[0].health))
+        else:
+            self.enemiesleft.set("Enemiesleft: -")
+            self.enemyhealth.set("Attacking enemy health: -")
+    
+    def update(self):
+        print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
+        if not self.player.incombat:
+            self.check()
+        self.updateScreen()
+        self.updateHUD()
     
 
     def onLeftClick(self):

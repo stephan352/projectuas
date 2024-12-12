@@ -25,19 +25,15 @@ class Character():
 
     def goLeft(self):
         self.goToPosition(self.position[0] - 1, self.position[1])
-        # self.position[0] -= 1
 
     def goRight(self):
         self.goToPosition(self.position[0] + 1, self.position[1])
-        # self.position[0] += 1
 
     def goUp(self):
         self.goToPosition(self.position[0], self.position[1] - 1)
-        # self.position[1] -= 1
 
     def goDown(self):
         self.goToPosition(self.position[0], self.position[1] + 1)
-        # self.position[1] += 1
 
 class Enemy(Character):
     def __init__(self, game):
