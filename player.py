@@ -9,6 +9,8 @@ class player(character.Character):
         self.incombat = False
 
         self.damage = 150
+        self.energy = 1000
+        self.attackcost = 20
     
     def goToPosition(self, x, y):
         if self.incombat:
@@ -29,4 +31,9 @@ class player(character.Character):
     
     def attack(self, opponent):
         self.game.setCombatOutput1("Attacked enemy for " + str(self.damage))
+        self.energy -= self.attackcost
         opponent.recieveAttack(self.damage)
+    
+    def eat(self, food):
+        self.health += food.regenerate
+        self.game.setOutput(food.__class__.__name__ + " eaten!")

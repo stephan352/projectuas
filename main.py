@@ -92,12 +92,16 @@ class Game():
 
         self.playerhealth = tkinter.StringVar()
         self.playerbiome = tkinter.StringVar()
+        self.playerenergy = tkinter.StringVar()
+        self.attackcost = tkinter.StringVar()
 
         self.combatoutput1 = tkinter.StringVar()
         self.combatoutput2 = tkinter.StringVar()
 
         self.enemiesleft = tkinter.StringVar()
         self.enemyhealth = tkinter.StringVar()
+
+        self.itemsfound = tkinter.StringVar()
 
         tkinter.Label(gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
         tkinter.Label(gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
@@ -108,7 +112,11 @@ class Game():
         tkinter.Label(gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4)
         tkinter.Label(gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4)
 
-        tkinter.Button(gamewindow, text="Attack enemy", command=self.onAttackClick).grid(row=5, column=4)
+        tkinter.Button(gamewindow, textvariable=self.attackcost, command=self.onAttackClick).grid(row=5, column=4)
+        tkinter.Label(gamewindow, textvariable=self.playerenergy).grid(row=8, column=0, columnspan=3)
+
+        tkinter.Label(gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
+        tkinter.Button(gamewindow, text="use", command=self.onUseClick).grid(row=7, column=4)
 
         self.update()
     
@@ -140,8 +148,11 @@ class Game():
             self.initiateCombat()
 
     def updateHUD(self):
-        self.playerhealth.set("Player health: " + str(self.player.health))
-        self.playerbiome.set("Player biome: " + str(self.player.getCurrontBiomeDisplay()))
+        self.playerhealth.set("Health: " + str(self.player.health))
+        self.attackcost.set("Attack! (" + str(self.player.attackcost) + ")")
+        self.playerbiome.set("Biome: " + str(self.player.getCurrontBiomeDisplay()))
+        self.playerenergy.set("Energy: " + str(self.player.energy))
+        self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getFoodName()))
         if self.player.getCurrentBiome().enemies:
             self.targetenemy = self.player.getCurrentBiome().enemies[0]
             self.enemiesleft.set("Enemiesleft: " + str(len(self.player.getCurrentBiome().enemies)))
@@ -178,6 +189,13 @@ class Game():
         if self.player.getCurrentBiome().enemies:
             self.player.attack(self.targetenemy)
         self.update()
+    
+    def onUseClick(self):
+        itemsfound = self.player.getCurrentBiome().item
+        if itemsfound:
+            self.player.eat(self.player.getCurrentBiome().popFood())
+        self.update()
+
 
 root = tkinter.Tk()
 maingame = Game(root)
