@@ -48,7 +48,7 @@ class Biome():
         return possiblefoods
     
     def generateFood(self):
-        if random.randint(0, 100) < 20:
+        if random.randint(0, 100) < 95:
             return [random.choice(self.getPossibleFoods())()]
         else:
             return []

@@ -21,7 +21,7 @@ class player(character.Character):
             if 0 <= x < map_dimensionX and 0 <= y < map_dimensionY:
                 self.position = [x, y]
             else:
-                print("Out of boundaries!")
+                self.game.setOutput("Map limit reached!")
     
     def getCurrentBiome(self):
         return self.game.map.getBiomeAt(self.position[0], self.position[1])

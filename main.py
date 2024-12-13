@@ -193,7 +193,10 @@ class Game():
     def onUseClick(self):
         itemsfound = self.player.getCurrentBiome().item
         if itemsfound:
-            self.player.eat(self.player.getCurrentBiome().popFood())
+            if self.player.incombat:
+                self.setOutput("Don't eat with enemy!")
+            else:
+                self.player.eat(self.player.getCurrentBiome().popFood())
         self.update()
 
 
