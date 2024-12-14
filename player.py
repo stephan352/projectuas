@@ -13,6 +13,7 @@ class player(character.Character):
         self.attackcost = 20
 
         self.exp = 0
+        self.level = 1
 
         self.skills = {"BetterAttack": [False, self.practiceBetterAttack, 100], "BetterHealth":[False, self.practiceBetterHealth, 200]}
     
@@ -66,7 +67,7 @@ class player(character.Character):
             self.skills["BetterHealth"][0] = True
             self.game.setOutput("Health skill practiced!")
             self.game.playerskills["BetterHealth"][-1].destroy()
-            self.exp += 30
+            self.gainExp(30)
 
     
     def practiceBetterAttack(self):
@@ -78,5 +79,16 @@ class player(character.Character):
             self.skills["BetterAttack"][0] = True
             self.game.setOutput("Attack skill practiced!")
             self.game.playerskills["BetterAttack"][-1].destroy()
-            self.exp += 20
+            self.gainExp(20)
+    
+    def gainExp(self, exp):
+        self.exp += exp*self.level
+        self.updateLevel()
 
+    def updateLevel(self):
+        levellimit = (1, 50, 200, 400, 600)
+        i = 1
+        for limit in levellimit:
+            if self.exp > limit:
+                self.level = i
+            i += 1

@@ -109,6 +109,7 @@ class Game():
         self.itemsfound = tkinter.StringVar()
 
         self.playerexp = tkinter.StringVar()
+        self.playerlevel = tkinter.StringVar()
 
         tkinter.Label(self.gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
         tkinter.Label(self.gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
@@ -126,6 +127,7 @@ class Game():
         tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=7, column=4)
 
         tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=9, column=0)
+        tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=10, column=0)
         
 
         self.update()
@@ -146,7 +148,7 @@ class Game():
         self.setOutput(self.targetenemy.__class__.__name__ + " is dead!")
         self.setCombatOutput2("-")
         self.player.getCurrentBiome().enemies.pop(0)
-        self.player.exp += 20
+        self.player.gainExp(20)
         if not self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies cleared!")
             # self.setCombatOutput1("-")
@@ -166,6 +168,7 @@ class Game():
         self.playerenergy.set("Energy: " + str(self.player.energy))
         self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getFoodName()))
         self.playerexp.set("Exp: " + str(self.player.exp))
+        self.playerlevel.set("Level: " + str(self.player.level))
         if self.player.getCurrentBiome().enemies:
             self.targetenemy = self.player.getCurrentBiome().enemies[0]
             self.enemiesleft.set("Enemiesleft: " + str(len(self.player.getCurrentBiome().enemies)))
