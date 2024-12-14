@@ -56,7 +56,8 @@ class Game():
         tkinter.Button(self.root, text="Start game!", command=self.startGame).grid(row=1,column=0)
     
     def startGame(self):
-        self.enemies = []
+        # self.enemies = []
+        self.bottomrow = 12
         size = self.selectedsize.get()
         if size == "small":
             self.map = map.Map(self, 20, 50)
@@ -68,6 +69,10 @@ class Game():
         self.player = self.initPlayer()
         self.output = tkinter.StringVar()
         self.output.set("")
+
+        self.playerskills = self.player.skills.copy()
+        for skill in self.playerskills:
+            self.playerskills[skill].append(False)
         
         self.gamewindow = tkinter.Toplevel()
         screenframe = tkinter.Frame(self.gamewindow)
@@ -121,11 +126,6 @@ class Game():
         tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=7, column=4)
 
         tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=9, column=0)
-
-        self.betterHealth = tkinter.Button(self.gamewindow, text="Practice health", command=self.onPracticeHealthClick)
-        self.betterHealth.grid(row=10, column=0, columnspan=3)
-        self.betterAttack = tkinter.Button(self.gamewindow, text="Practice attack", command=self.onPracticeAttackClick)
-        self.betterAttack.grid(row=11, column=0, columnspan=3)
         
 
         self.update()
@@ -144,6 +144,7 @@ class Game():
     
     def onEnemyDeath(self):
         self.setOutput(self.targetenemy.__class__.__name__ + " is dead!")
+        self.setCombatOutput2("-")
         self.player.getCurrentBiome().enemies.pop(0)
         self.player.exp += 20
         if not self.player.getCurrentBiome().enemies:
@@ -173,9 +174,15 @@ class Game():
             self.enemiesleft.set("No enemies")
             self.enemyhealth.set("-")
 
-            # for skill in self.player.skills:
-            #     if self.player.exp > self.player.skills[skill][2]:
-            #         tkinter.Button()
+            for skill in self.player.skills:
+                if self.player.exp > self.player.skills[skill][2] and not self.playerskills[skill][3]:
+                    currentskill = skill
+                    skillbutton = tkinter.Button(self.gamewindow, text="Practice " + skill, command=lambda: self.practiceClick(currentskill))
+                    print("current skill: ", skill)
+                    self.playerskills[currentskill].append(skillbutton)
+                    skillbutton.grid(row=self.bottomrow, column=0, columnspan=3)
+                    self.playerskills[currentskill][3] = True
+                    self.bottomrow += 1
     
     def update(self):
         print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
@@ -215,13 +222,17 @@ class Game():
                 self.player.eat(self.player.getCurrentBiome().popFood())
         self.update()
     
-    def onPracticeHealthClick(self):
-        self.player.practiceSkill("BetterHealth")
+    def practiceClick(self, skill):
+        self.player.practiceSkill(skill)
         self.update()
     
-    def onPracticeAttackClick(self):
-        self.player.practiceSkill("BetterAttack")
-        self.update()
+    # def onPracticeHealthClick(self):
+    #     self.player.practiceSkill("BetterHealth")
+    #     self.update()
+    
+    # def onPracticeAttackClick(self):
+    #     self.player.practiceSkill("BetterAttack")
+    #     self.update()
 
 
 root = tkinter.Tk()

@@ -43,12 +43,14 @@ class player(character.Character):
         self.game.setOutput(food.__class__.__name__ + " eaten!")
     
     def practiceSkill(self, skill):
+        print(skill + ": " + str(self.skills[skill]))
         if self.incombat:
             self.game.setOutput("Cannot train with enemy!")
         elif skill in self.skills:
             if self.skills[skill][0]:
                 self.game.setOutput("Already have skill!")
             elif self.exp < self.skills[skill][2]:
+                print(self.skills[skill][2])
                 self.game.setOutput("Not enough exp!")
             else:
                 self.skills[skill][1]()
@@ -63,7 +65,7 @@ class player(character.Character):
             self.health += 30
             self.skills["BetterHealth"][0] = True
             self.game.setOutput("Health skill practiced!")
-            self.game.betterHealth.destroy()
+            self.game.playerskills["BetterHealth"][-1].destroy()
             self.exp += 30
 
     
@@ -75,6 +77,6 @@ class player(character.Character):
             self.damage += 2
             self.skills["BetterAttack"][0] = True
             self.game.setOutput("Attack skill practiced!")
-            self.game.betterAttack.destroy()
+            self.game.playerskills["BetterAttack"][-1].destroy()
             self.exp += 20
 
