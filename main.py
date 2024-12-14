@@ -69,8 +69,8 @@ class Game():
         self.output = tkinter.StringVar()
         self.output.set("")
         
-        gamewindow = tkinter.Toplevel()
-        screenframe = tkinter.Frame(gamewindow)
+        self.gamewindow = tkinter.Toplevel()
+        screenframe = tkinter.Frame(self.gamewindow)
         screenframe.grid(row=0,column=0,columnspan=3)
         map_columns = tuple([str(i) for i in range(9)])
         self.table = tkinter.ttk.Treeview(screenframe, columns= map_columns, show="tree")
@@ -83,12 +83,12 @@ class Game():
         for row in croppedScreen:
             self.table.insert(parent="", index=tkinter.END, values=row)
         
-        tkinter.Label(gamewindow, textvariable=self.output).grid(row=2, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.output).grid(row=2, column=0, columnspan=3)
 
-        tkinter.Button(gamewindow, text="Left", command=self.onLeftClick).grid(row=4, column=0)
-        tkinter.Button(gamewindow, text="Right", command=self.onRightClick).grid(row=4, column=2)
-        tkinter.Button(gamewindow, text="Up", command=self.onUpClick).grid(row=3, column=1)
-        tkinter.Button(gamewindow, text="Down", command=self.onDownClick).grid(row=5, column=1)
+        tkinter.Button(self.gamewindow, text="Left", command=self.onLeftClick).grid(row=4, column=0)
+        tkinter.Button(self.gamewindow, text="Right", command=self.onRightClick).grid(row=4, column=2)
+        tkinter.Button(self.gamewindow, text="Up", command=self.onUpClick).grid(row=3, column=1)
+        tkinter.Button(self.gamewindow, text="Down", command=self.onDownClick).grid(row=5, column=1)
 
         self.playerhealth = tkinter.StringVar()
         self.playerbiome = tkinter.StringVar()
@@ -103,20 +103,30 @@ class Game():
 
         self.itemsfound = tkinter.StringVar()
 
-        tkinter.Label(gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
-        tkinter.Label(gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
+        self.playerexp = tkinter.StringVar()
 
-        tkinter.Label(gamewindow, textvariable=self.combatoutput1).grid(row=1, column=4)
-        tkinter.Label(gamewindow, textvariable=self.combatoutput2).grid(row=2, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
 
-        tkinter.Label(gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4)
-        tkinter.Label(gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.combatoutput1).grid(row=1, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.combatoutput2).grid(row=2, column=4)
 
-        tkinter.Button(gamewindow, textvariable=self.attackcost, command=self.onAttackClick).grid(row=5, column=4)
-        tkinter.Label(gamewindow, textvariable=self.playerenergy).grid(row=8, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4)
 
-        tkinter.Label(gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
-        tkinter.Button(gamewindow, text="use", command=self.onUseClick).grid(row=7, column=4)
+        tkinter.Button(self.gamewindow, textvariable=self.attackcost, command=self.onAttackClick).grid(row=5, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.playerenergy).grid(row=8, column=0, columnspan=3)
+
+        tkinter.Label(self.gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
+        tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=7, column=4)
+
+        tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=9, column=0)
+
+        self.betterHealth = tkinter.Button(self.gamewindow, text="Practice health", command=self.onPracticeHealthClick)
+        self.betterHealth.grid(row=10, column=0, columnspan=3)
+        self.betterAttack = tkinter.Button(self.gamewindow, text="Practice attack", command=self.onPracticeAttackClick)
+        self.betterAttack.grid(row=11, column=0, columnspan=3)
+        
 
         self.update()
     
@@ -135,6 +145,7 @@ class Game():
     def onEnemyDeath(self):
         self.setOutput(self.targetenemy.__class__.__name__ + " is dead!")
         self.player.getCurrentBiome().enemies.pop(0)
+        self.player.exp += 20
         if not self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies cleared!")
             # self.setCombatOutput1("-")
@@ -153,6 +164,7 @@ class Game():
         self.playerbiome.set("Biome: " + str(self.player.getCurrontBiomeDisplay()))
         self.playerenergy.set("Energy: " + str(self.player.energy))
         self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getFoodName()))
+        self.playerexp.set("Exp: " + str(self.player.exp))
         if self.player.getCurrentBiome().enemies:
             self.targetenemy = self.player.getCurrentBiome().enemies[0]
             self.enemiesleft.set("Enemiesleft: " + str(len(self.player.getCurrentBiome().enemies)))
@@ -160,6 +172,10 @@ class Game():
         else:
             self.enemiesleft.set("No enemies")
             self.enemyhealth.set("-")
+
+            # for skill in self.player.skills:
+            #     if self.player.exp > self.player.skills[skill][2]:
+            #         tkinter.Button()
     
     def update(self):
         print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
@@ -197,6 +213,14 @@ class Game():
                 self.setOutput("Don't eat with enemy!")
             else:
                 self.player.eat(self.player.getCurrentBiome().popFood())
+        self.update()
+    
+    def onPracticeHealthClick(self):
+        self.player.practiceSkill("BetterHealth")
+        self.update()
+    
+    def onPracticeAttackClick(self):
+        self.player.practiceSkill("BetterAttack")
         self.update()
 
 

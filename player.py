@@ -11,6 +11,10 @@ class player(character.Character):
         self.damage = 150
         self.energy = 1000
         self.attackcost = 20
+
+        self.exp = 0
+
+        self.skills = {"BetterAttack": [False, self.practiceBetterAttack, 100], "BetterHealth":[False, self.practiceBetterHealth, 200]}
     
     def goToPosition(self, x, y):
         if self.incombat:
@@ -37,3 +41,40 @@ class player(character.Character):
     def eat(self, food):
         self.health += food.regenerate
         self.game.setOutput(food.__class__.__name__ + " eaten!")
+    
+    def practiceSkill(self, skill):
+        if self.incombat:
+            self.game.setOutput("Cannot train with enemy!")
+        elif skill in self.skills:
+            if self.skills[skill][0]:
+                self.game.setOutput("Already have skill!")
+            elif self.exp < self.skills[skill][2]:
+                self.game.setOutput("Not enough exp!")
+            else:
+                self.skills[skill][1]()
+        else:
+            self.game.setOutput("Cannot train skill!")
+    
+    def practiceBetterHealth(self):
+        if self.energy < 100:
+            self.game.setOutput("Not enough energy!")
+        else:
+            self.energy -= 100
+            self.health += 30
+            self.skills["BetterHealth"][0] = True
+            self.game.setOutput("Health skill practiced!")
+            self.game.betterHealth.destroy()
+            self.exp += 30
+
+    
+    def practiceBetterAttack(self):
+        if self.energy < 80:
+            self.game.setOutput("Not enough energy!")
+        else:
+            self.energy -= 80
+            self.damage += 2
+            self.skills["BetterAttack"][0] = True
+            self.game.setOutput("Attack skill practiced!")
+            self.game.betterAttack.destroy()
+            self.exp += 20
+
