@@ -148,6 +148,7 @@ class Game():
         tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=11, column=0, columnspan=3)
 
         tkinter.Label(self.gamewindow, textvariable=self.enemiesremaining).grid(row=12, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, text="Defeat all enemies to win!").grid(row=13, column=0, columnspan=3)
 
         self.buttons = (b1, b2, b3, b4, b5, b6)
         
