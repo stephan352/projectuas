@@ -5,7 +5,7 @@ class Enemy(character.Character):
     def __init__(self, game):
         super().__init__(game)
         self.dodge = 15
-        self.damage = 5
+        self.damage = 4
 
         self.stunned = False
     

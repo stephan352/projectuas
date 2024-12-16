@@ -31,11 +31,14 @@ class Biome():
             return "-"
     
     def generateAnEnemy(self):
-        return random.choice(self.getPossibleEnemies())(self.game)
+        enemy = random.choice(self.getPossibleEnemies())(self.game)
+        self.game.enemies.append(enemy)
+        return enemy
     
     def generateEnemies(self):
         randompercentage = random.randint(0, 100)
-        if randompercentage < 5:
+        chance = 20
+        if randompercentage < 100 - chance:
             return []
         else:
             numberofenemies = random.randint(1,2)

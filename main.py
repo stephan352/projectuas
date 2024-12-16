@@ -56,11 +56,11 @@ class Game():
         tkinter.Button(self.root, text="Start game!", command=self.startGame).grid(row=1,column=0)
     
     def startGame(self):
-        # self.enemies = []
+        self.enemies = []
         self.bottomrow = 15
         size = self.selectedsize.get()
         if size == "small":
-            self.map = map.Map(self, 20, 50)
+            self.map = map.Map(self, 25, 25)
         elif size == "medium":
             self.map = map.Map(self, 50, 50)
         elif size == "large":
@@ -119,6 +119,8 @@ class Game():
 
         self.playergear = tkinter.StringVar()
 
+        self.enemiesremaining = tkinter.StringVar()
+
         tkinter.Label(self.gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
         tkinter.Label(self.gamewindow, textvariable=self.playergear).grid(row=7, column=0, columnspan=3)
         tkinter.Label(self.gamewindow, textvariable=self.playerbiome).grid(row=8, column=0, columnspan=3)
@@ -145,6 +147,8 @@ class Game():
 
         tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=11, column=0, columnspan=3)
 
+        tkinter.Label(self.gamewindow, textvariable=self.enemiesremaining).grid(row=12, column=0, columnspan=3)
+
         self.buttons = (b1, b2, b3, b4, b5, b6)
         
 
@@ -166,6 +170,7 @@ class Game():
         self.setOutput(self.targetenemy.__class__.__name__ + " is dead!")
         self.setCombatOutput2("-")
         self.player.getCurrentBiome().enemies.pop(0)
+        self.enemies.remove(self.targetenemy)
         self.player.gainExp(20)
         if not self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies cleared!")
@@ -189,6 +194,8 @@ class Game():
         self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getItemName()))
         self.playerexp.set("Exp: " + str(self.player.exp))
         self.playerlevel.set("Level: " + str(self.player.level))
+
+        self.enemiesremaining.set("Enemies left: " + str(len(self.enemies)))
         if self.player.getCurrentBiome().enemies:
             self.targetenemy = self.player.getCurrentBiome().enemies[0]
             self.enemiesleft.set("Enemiesleft: " + str(len(self.player.getCurrentBiome().enemies)))
@@ -208,9 +215,14 @@ class Game():
                     self.bottomrow += 1
     
     def update(self):
-        print(self.player.getCurrentBiome().item)
+        print(self.enemies)
         if self.player.health <= 0:
             self.setOutput("You died! Game over")
+            for button in self.buttons:
+                button.destroy()
+            tkinter.Button(self.gamewindow, text="NEW GAME", command=self.startGame).grid(row=self.bottomrow, column=0, columnspan=3)
+        if not self.enemies:
+            self.setOutput("You finished the game!")
             for button in self.buttons:
                 button.destroy()
             tkinter.Button(self.gamewindow, text="NEW GAME", command=self.startGame).grid(row=self.bottomrow, column=0, columnspan=3)
