@@ -252,7 +252,9 @@ class Game():
                     self.bottomrow += 1
     
     def update(self):
-        print("debug line")
+        if self.player.getCurrentBiome().merchant:
+            print("inventory: ", self.player.getCurrentBiome().merchant.inventory)
+            print("prices: ", self.player.getCurrentBiome().merchant.prices)
         if self.player.health <= 0:
             self.setOutput("You died! Game over")
             for button in self.buttons:
@@ -266,7 +268,7 @@ class Game():
         if not self.player.incombat:
             self.checkForEnemy()
 
-            if self.player.getCurrentBiome().merchant:
+            if self.player.getCurrentBiome().merchant and not self.player.incombat:
                 if not self.merchantHUD:
                     self.generateMerchantHUD()
             elif self.merchantHUD:
@@ -291,7 +293,8 @@ class Game():
         tradebutton.grid(row=14, column=5)
         nextmerchantitem = tkinter.Button(self.gamewindow, text=">", command=self.onNextMerchantItemClick)
         nextmerchantitem.grid(row=14, column=6)
-        sellbutton = tkinter.Button(self.gamewindow, text="Sell selected item", command=self.onSellClick)
+        self.sellprice = tkinter.StringVar()
+        sellbutton = tkinter.Button(self.gamewindow, textvariable=self.sellprice, command=self.onSellClick)
         sellbutton.grid(row=15, column=5)
         
         self.merchantHUD = (youmetmerchant, merchantitemdisplay, nextmerchantitem, tradebutton)
@@ -303,10 +306,12 @@ class Game():
         self.merchantHUD = False
     
     def updateMerchantHUD(self):
-        if self.player.getCurrentBiome().merchant.inventory:
-            self.targetmerchantitem = self.player.getCurrentBiome().merchant.inventory[0]
+        merchant = self.player.getCurrentBiome().merchant
+        if merchant.inventory:
+            self.targetmerchantitem = merchant.inventory[0]
             self.displayedmerchantitem.set(self.targetmerchantitem.__class__.__name__)
-            self.merchantsell.set("Buy (" + str(self.targetmerchantitem.price) + ")")
+            self.merchantsell.set("Buy (" + str(merchant.prices[self.targetmerchantitem]) + ")")
+            self.sellprice.set("Sell current item (" + str(merchant.buyingprice) + ")")
         else:
             self.targetmerchantitem = None
             self.displayedmerchantitem.set("-")
@@ -378,13 +383,21 @@ class Game():
         self.update()
     
     def onBuyClick(self):
-        if self.player.getCurrentBiome().merchant.inventory:
-            self.player.buy(self.targetmerchantitem)
-            if self.targetmerchantitem in self.player.getCurrentBiome().merchant.inventory:
-                self.player.getCurrentBiome().merchant.inventory.remove(self.targetmerchantitem)
+        merchant = self.player.getCurrentBiome().merchant
+        if merchant.inventory:
+            price = merchant.prices[self.targetmerchantitem]
+            self.player.gold -= price
+            self.player.inventory.append(self.targetmerchantitem)
+            merchant.lose(self.targetmerchantitem)
         self.update()
     
     def onSellClick(self):
+        if self.player.inventory:
+            merchant = self.player.getCurrentBiome().merchant
+            merchant.gain(self.targetplayeritem, merchant.buyingprice*2)
+            if self.targetplayeritem in self.player.inventory:
+                self.player.inventory.remove(self.targetplayeritem)
+            self.player.gold += merchant.buyingprice
 
         self.update()
     

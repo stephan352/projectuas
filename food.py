@@ -4,9 +4,9 @@ class Food():
     def __init__(self, game):
         self.game = game
         self.regenerateHP = 50
-        self.regenerateEnergy = 30
+        self.regenerateEnergy = 100
 
-        self.price = 0
+        # self.price = 0
     
     def useEffect(self):
         self.game.player.health += self.regenerateHP

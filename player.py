@@ -26,10 +26,6 @@ class player(character.Character):
         # ini skills kyknya butuh OOP
         self.skills = {"BetterAttack": [False, self.practiceBetterAttack, 100], "BetterHealth":[False, self.practiceBetterHealth, 200]}
     
-    def buy(self, item):
-        self.gold -= item.price
-        self.inventory.append(item)
-        item.price = 0
 
     def use(self, item):
         if issubclass(item.__class__, items.Weapon):
