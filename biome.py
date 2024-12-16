@@ -2,6 +2,7 @@ import enemy
 import random
 import food
 import items
+import merchant
 
 class Biome():
     def __init__(self, game):
@@ -10,6 +11,7 @@ class Biome():
         self.icon = ""
         self.enemies = self.generateEnemies()
         self.item = self.generateItems()
+        self.merchant = self.generateMerchant()
     
     def getType(self):
         return self.__class__.__name__
@@ -73,11 +75,17 @@ class Biome():
     def popItem(self):
         return self.item.pop(0)
     
-    def removeItem(self, item):
+    def removeItem(self, item): #terpakai?
         try:
             self.item.remove(item)
         except ValueError:
             pass
+    
+    def generateMerchant(self):
+        if random.randint(0, 100) < 50:
+            return merchant.Merchant(self.game)
+        else:
+            return None
 
 class Desert(Biome):
     def __init__(self, game):

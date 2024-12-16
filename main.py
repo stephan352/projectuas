@@ -57,7 +57,8 @@ class Game():
     
     def startGame(self):
         self.enemies = []
-        self.bottomrow = 15
+        self.bottomrow = 25
+        self.merchantHUD = False
         size = self.selectedsize.get()
         if size == "small":
             self.map = map.Map(self, 25, 25)
@@ -107,6 +108,7 @@ class Game():
         self.playerhealth = tkinter.StringVar()
         self.playerbiome = tkinter.StringVar()
         self.playerenergy = tkinter.StringVar()
+        self.playergold = tkinter.StringVar()
         self.attackcost = tkinter.StringVar()
         self.stunattackcost = tkinter.StringVar()
 
@@ -132,11 +134,11 @@ class Game():
         tkinter.Label(self.gamewindow, textvariable=self.playergear).grid(row=7, column=0, columnspan=3)
         tkinter.Label(self.gamewindow, textvariable=self.playerbiome).grid(row=8, column=0, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.combatoutput1).grid(row=1, column=4)
-        tkinter.Label(self.gamewindow, textvariable=self.combatoutput2).grid(row=2, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.combatoutput1).grid(row=1, column=4, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.combatoutput2).grid(row=2, column=4, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4)
-        tkinter.Label(self.gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4, columnspan=3)
 
         b5 = tkinter.Button(self.gamewindow, textvariable=self.attackcost, command=self.onAttackClick)
         b5.grid(row=5, column=4)
@@ -145,23 +147,25 @@ class Game():
         b7.grid(row=5, column=5)
 
         tkinter.Label(self.gamewindow, textvariable=self.playerenergy).grid(row=9, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.playergold).grid(row=10, column=0, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.itemsfound).grid(row=6, column=4, columnspan=3)
         b6 = tkinter.Button(self.gamewindow, text="take", command=self.onTakeClick)
-        b6.grid(row=7, column=4)
+        b6.grid(row=7, column=4, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.inventorylen).grid(row=8, column=4)
-        tkinter.Label(self.gamewindow, textvariable=self.inventoryitem).grid(row=9, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.inventorylen).grid(row=8, column=4, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.inventoryitem).grid(row=9, column=4, columnspan=3)
         tkinter.Button(self.gamewindow, text=">", command=self.onNextPlayerItemClick).grid(row=10, column=5)
-        tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=10, column=4)
-        tkinter.Button(self.gamewindow, text="drop", command=self.onDropClick).grid(row=11, column=4)
+        tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=10, column=4, columnspan=3)
+        tkinter.Button(self.gamewindow, text="drop", command=self.onDropClick).grid(row=11, column=4, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=10, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=11, column=0, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=11, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=12, column=0, columnspan=3)
 
-        tkinter.Label(self.gamewindow, textvariable=self.enemiesremaining).grid(row=12, column=0, columnspan=3)
-        tkinter.Label(self.gamewindow, text="Defeat all enemies to win!").grid(row=13, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.enemiesremaining).grid(row=13, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, text="Defeat all enemies to win!").grid(row=14, column=0, columnspan=3)
+        
 
         self.buttons = (b1, b2, b3, b4, b5, b6)
         
@@ -215,6 +219,7 @@ class Game():
 
         self.playerbiome.set("Biome: " + str(self.player.getCurrontBiomeDisplay()))
         self.playerenergy.set("Energy: " + str(self.player.energy))
+        self.playergold.set("Gold: " + str(self.player.gold))
 
         self.itemsfound.set("Found " + str(self.targetfounditem.__class__.__name__))
 
@@ -225,6 +230,10 @@ class Game():
         self.inventoryitem.set(str(self.targetplayeritem.__class__.__name__))
 
         self.enemiesremaining.set("Enemies left: " + str(len(self.enemies)))
+        
+        if self.merchantHUD:
+            self.updateMerchantHUD()
+
         if self.player.getCurrentBiome().enemies:
             self.targetenemy = self.player.getCurrentBiome().enemies[0]
             self.enemiesleft.set("Enemiesleft: " + str(len(self.player.getCurrentBiome().enemies)))
@@ -237,7 +246,6 @@ class Game():
                 if self.player.exp > self.player.skills[skill][2] and not self.playerskills[skill][3]:
                     currentskill = skill
                     skillbutton = tkinter.Button(self.gamewindow, text="Practice " + skill, command=lambda: self.onPracticeClick(currentskill))
-                    print("current skill: ", skill)
                     self.playerskills[currentskill].append(skillbutton)
                     skillbutton.grid(row=self.bottomrow, column=0, columnspan=3)
                     self.playerskills[currentskill][3] = True
@@ -257,9 +265,53 @@ class Game():
             tkinter.Button(self.gamewindow, text="NEW GAME", command=self.startGame).grid(row=self.bottomrow, column=0, columnspan=3)
         if not self.player.incombat:
             self.checkForEnemy()
+
+            if self.player.getCurrentBiome().merchant:
+                if not self.merchantHUD:
+                    self.generateMerchantHUD()
+            elif self.merchantHUD:
+                self.removeMerchantHUD()
+                
         self.updateScreen()
         self.updateHUD()
     
+    def generateMerchantHUD(self):
+        self.merchantHUD = True
+        merchant = self.player.getCurrentBiome().merchant
+        youmetmerchant = tkinter.Label(self.gamewindow, text="You met a merchant!")
+        youmetmerchant.grid(row=12, column=4, columnspan=3)
+        self.targetmerchantitem = merchant.inventory[0]
+        self.displayedmerchantitem = tkinter.StringVar()
+        self.displayedmerchantitem.set(merchant.inventory[0].__class__.__name__)
+        merchantitemdisplay = tkinter.Label(self.gamewindow, textvariable=self.displayedmerchantitem)
+        merchantitemdisplay.grid(row=13, column=4, columnspan=3)
+
+        self.merchantsell = tkinter.StringVar()
+        tradebutton = tkinter.Button(self.gamewindow, textvariable=self.merchantsell, command=self.onBuyClick)
+        tradebutton.grid(row=14, column=5)
+        nextmerchantitem = tkinter.Button(self.gamewindow, text=">", command=self.onNextMerchantItemClick)
+        nextmerchantitem.grid(row=14, column=6)
+        sellbutton = tkinter.Button(self.gamewindow, text="Sell selected item", command=self.onSellClick)
+        sellbutton.grid(row=15, column=5)
+        
+        self.merchantHUD = (youmetmerchant, merchantitemdisplay, nextmerchantitem, tradebutton)
+
+    def removeMerchantHUD(self):
+        self.targetmerchantitem = None
+        for widget in self.merchantHUD:
+            widget.destroy()
+        self.merchantHUD = False
+    
+    def updateMerchantHUD(self):
+        if self.player.getCurrentBiome().merchant.inventory:
+            self.targetmerchantitem = self.player.getCurrentBiome().merchant.inventory[0]
+            self.displayedmerchantitem.set(self.targetmerchantitem.__class__.__name__)
+            self.merchantsell.set("Buy (" + str(self.targetmerchantitem.price) + ")")
+        else:
+            self.targetmerchantitem = None
+            self.displayedmerchantitem.set("-")
+            self.merchantsell.set("Buy (-)")
+
 
     def onLeftClick(self):
         self.player.goLeft()
@@ -316,6 +368,24 @@ class Game():
     def onDropClick(self):
         if self.player.inventory:
             self.player.drop(self.targetplayeritem)
+        self.update()
+
+    def onNextMerchantItemClick(self):
+        merchant = self.player.getCurrentBiome().merchant
+        if merchant.inventory:
+            lastitem = merchant.inventory.pop(0)
+            merchant.inventory.append(lastitem)
+        self.update()
+    
+    def onBuyClick(self):
+        if self.player.getCurrentBiome().merchant.inventory:
+            self.player.buy(self.targetmerchantitem)
+            if self.targetmerchantitem in self.player.getCurrentBiome().merchant.inventory:
+                self.player.getCurrentBiome().merchant.inventory.remove(self.targetmerchantitem)
+        self.update()
+    
+    def onSellClick(self):
+
         self.update()
     
 
