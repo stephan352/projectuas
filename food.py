@@ -1,12 +1,8 @@
-import items
-
 class Food():
     def __init__(self, game):
         self.game = game
         self.regenerateHP = 50
-        self.regenerateEnergy = 100
-
-        # self.price = 0
+        self.regenerateEnergy = 200
     
     def useEffect(self):
         self.game.player.health += self.regenerateHP

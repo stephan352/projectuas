@@ -31,6 +31,3 @@ class Merchant(character.Character):
     def gain(self, item, price):
         self.inventory.append(item)
         self.prices[item] = price
-    
-    #def giveItem(self):
-

@@ -7,7 +7,6 @@ import merchant
 class Biome():
     def __init__(self, game):
         self.game = game
-        self.position = [0,0] #blm selesai
         self.icon = ""
         self.enemies = self.generateEnemies()
         self.item = self.generateItems()
@@ -75,14 +74,14 @@ class Biome():
     def popItem(self):
         return self.item.pop(0)
     
-    def removeItem(self, item): #terpakai?
+    def removeItem(self, item):
         try:
             self.item.remove(item)
         except ValueError:
             pass
     
     def generateMerchant(self):
-        if random.randint(0, 100) < 50:
+        if random.randint(0, 100) < 5:
             return merchant.Merchant(self.game)
         else:
             return None

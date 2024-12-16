@@ -2,8 +2,6 @@ class Item():
     def __init__(self, game):
         self.game = game
 
-        # self.price = 0
-
 class Gear(Item):
     def __init__(self, game):
         super().__init__(game)

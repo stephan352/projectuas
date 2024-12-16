@@ -1,4 +1,3 @@
-# import biome
 import tkinter.ttk
 import player
 import map
