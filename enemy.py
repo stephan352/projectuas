@@ -4,7 +4,7 @@ import random
 class Enemy(character.Character):
     def __init__(self, game):
         super().__init__(game)
-        self.dodge = 10
+        self.dodge = 15
         self.damage = 5
     
     def counterAttack(self, player):
@@ -23,18 +23,39 @@ class Enemy(character.Character):
     
     
 class GiantScorpion(Enemy):
-    # nativeTo = biome.Desert
     nativeTo = "Desert"
     def __init__(self, game):
         super().__init__(game)
-        # self.nativeTo = biome.Desert
 
 class Gorilla(Enemy):
-    # nativeTo = biome.Jungle
     nativeTo = "Jungle"
     def __init__(self, game):
         super().__init__(game)
-        # self.nativeTo = biome.Jungle
+
+class Crodocile(Enemy):
+    nativeTo = "Jungle"
+    def __init__(self, game):
+        super().__init__(game)
+
+class AngryCamel(Enemy):
+    nativeTo = "Desert"
+    def __init__(self, game):
+        super().__init__(game)
+
+class Wolf(Enemy):
+    nativeTo = "Meadow"
+    def __init__(self, game):
+        super().__init__(game)
+
+class Leopard(Enemy):
+    nativeTo = "Meadow"
+    def __init__(self, game):
+        super().__init__(game)
+
+class PolarBear(Enemy):
+    nativeTo = "Tundra"
+    def __init__(self, game):
+        super().__init__(game)
 
 
 enemyTypes = Enemy.__subclasses__()

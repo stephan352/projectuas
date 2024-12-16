@@ -48,7 +48,7 @@ class Biome():
         return possiblefoods
     
     def generateFood(self):
-        if random.randint(0, 100) < 95:
+        if random.randint(0, 100) < 15:
             return [random.choice(self.getPossibleFoods())()]
         else:
             return []
@@ -59,18 +59,22 @@ class Biome():
 class Desert(Biome):
     def __init__(self, game):
         super().__init__(game)
-        self.icon = "🏜️"
-    
-    # def getType(self):
-    #     return "Desert"
-        
+        self.icon = "🏜️"      
 
 class Jungle(Biome):
     def __init__(self, game):
         super().__init__(game)
         self.icon = "🌴"
-    
-    # def getType(self):
-    #     return "Jungle"
+
+class Meadow(Biome):
+    def __init__(self, game):
+        super().__init__(game)
+        self.icon = "🏞️"
+
+class Tundra(Biome):
+    def __init__(self, game):
+        super().__init__(game)
+        self.icon = "❄️"
+
 
 biomeTypes = Biome.__subclasses__()

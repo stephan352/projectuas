@@ -1,5 +1,4 @@
 import character
-import tkinter
 
 class player(character.Character):
     def __init__(self, game):
@@ -8,7 +7,7 @@ class player(character.Character):
         self.icon = "🏃"
         self.incombat = False
 
-        self.damage = 150
+        self.damage = 20
         self.energy = 1000
         self.attackcost = 20
 
