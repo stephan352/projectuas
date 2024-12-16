@@ -82,7 +82,7 @@ class Biome():
             pass
     
     def generateMerchant(self):
-        if random.randint(0, 100) < 5:
+        if random.randint(0, 100) < 50:
             return merchant.Merchant(self.game)
         else:
             return None

@@ -282,22 +282,42 @@ class Game():
         merchant = self.player.getCurrentBiome().merchant
         youmetmerchant = tkinter.Label(self.gamewindow, text="You met a merchant!")
         youmetmerchant.grid(row=12, column=4, columnspan=3)
-        self.targetmerchantitem = merchant.inventory[0]
-        self.displayedmerchantitem = tkinter.StringVar()
-        self.displayedmerchantitem.set(merchant.inventory[0].__class__.__name__)
-        merchantitemdisplay = tkinter.Label(self.gamewindow, textvariable=self.displayedmerchantitem)
-        merchantitemdisplay.grid(row=13, column=4, columnspan=3)
 
-        self.merchantsell = tkinter.StringVar()
-        tradebutton = tkinter.Button(self.gamewindow, textvariable=self.merchantsell, command=self.onBuyClick)
-        tradebutton.grid(row=14, column=5)
-        nextmerchantitem = tkinter.Button(self.gamewindow, text=">", command=self.onNextMerchantItemClick)
-        nextmerchantitem.grid(row=14, column=6)
-        self.sellprice = tkinter.StringVar()
-        sellbutton = tkinter.Button(self.gamewindow, textvariable=self.sellprice, command=self.onSellClick)
-        sellbutton.grid(row=15, column=5)
+        if merchant.inventory:
+
+            self.targetmerchantitem = merchant.inventory[0]
+            self.displayedmerchantitem = tkinter.StringVar()
+            self.displayedmerchantitem.set(merchant.inventory[0].__class__.__name__)
+            merchantitemdisplay = tkinter.Label(self.gamewindow, textvariable=self.displayedmerchantitem)
+            merchantitemdisplay.grid(row=13, column=4, columnspan=3)
+
+            self.merchantsell = tkinter.StringVar()
+            tradebutton = tkinter.Button(self.gamewindow, textvariable=self.merchantsell, command=self.onBuyClick)
+            tradebutton.grid(row=14, column=5)
+            nextmerchantitem = tkinter.Button(self.gamewindow, text=">", command=self.onNextMerchantItemClick)
+            nextmerchantitem.grid(row=14, column=6)
+            self.sellprice = tkinter.StringVar()
+            sellbutton = tkinter.Button(self.gamewindow, textvariable=self.sellprice, command=self.onSellClick)
+            sellbutton.grid(row=15, column=5)
         
-        self.merchantHUD = (youmetmerchant, merchantitemdisplay, nextmerchantitem, tradebutton)
+            self.merchantHUD = (youmetmerchant, merchantitemdisplay, nextmerchantitem, tradebutton, sellbutton)
+        else:
+            self.displayedmerchantitem = tkinter.StringVar()
+            self.displayedmerchantitem.set("-")
+
+            merchantitemdisplay = tkinter.Label(self.gamewindow, textvariable=self.displayedmerchantitem)
+            merchantitemdisplay.grid(row=13, column=4, columnspan=3)
+
+            self.merchantsell = tkinter.StringVar()
+            tradebutton = tkinter.Button(self.gamewindow, textvariable=self.merchantsell, command=self.onBuyClick)
+            tradebutton.grid(row=14, column=5)
+            nextmerchantitem = tkinter.Button(self.gamewindow, text=">", command=self.onNextMerchantItemClick)
+            nextmerchantitem.grid(row=14, column=6)
+            self.sellprice = tkinter.StringVar()
+            sellbutton = tkinter.Button(self.gamewindow, textvariable=self.sellprice, command=self.onSellClick)
+            sellbutton.grid(row=15, column=5)
+        
+            self.merchantHUD = (youmetmerchant, merchantitemdisplay, nextmerchantitem, tradebutton, sellbutton)
 
     def removeMerchantHUD(self):
         self.targetmerchantitem = None
@@ -316,6 +336,7 @@ class Game():
             self.targetmerchantitem = None
             self.displayedmerchantitem.set("-")
             self.merchantsell.set("Buy (-)")
+            self.sellprice.set("Sell current item (" + str(merchant.buyingprice) + ")")
 
 
     def onLeftClick(self):
