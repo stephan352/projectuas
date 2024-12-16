@@ -118,6 +118,7 @@ class Game():
 
         self.itemsfound = tkinter.StringVar()
 
+        self.inventorylen = tkinter.StringVar()
         self.inventoryitem = tkinter.StringVar()
 
         self.playerexp = tkinter.StringVar()
@@ -149,10 +150,11 @@ class Game():
         b6 = tkinter.Button(self.gamewindow, text="take", command=self.onTakeClick)
         b6.grid(row=7, column=4)
 
-        tkinter.Label(self.gamewindow, text="==inventory==").grid(row=8, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.inventorylen).grid(row=8, column=4)
         tkinter.Label(self.gamewindow, textvariable=self.inventoryitem).grid(row=9, column=4)
         tkinter.Button(self.gamewindow, text=">", command=self.onNextPlayerItemClick).grid(row=10, column=5)
         tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=10, column=4)
+        tkinter.Button(self.gamewindow, text="drop", command=self.onDropClick).grid(row=11, column=4)
 
         tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=10, column=0, columnspan=3)
 
@@ -221,6 +223,7 @@ class Game():
         self.playerexp.set("Exp: " + str(self.player.exp))
         self.playerlevel.set("Level: " + str(self.player.level))
 
+        self.inventorylen.set("==inventory (" + str(len(self.player.inventory)) + ")==")
         self.inventoryitem.set(str(self.targetplayeritem.__class__.__name__))
 
         self.enemiesremaining.set("Enemies left: " + str(len(self.enemies)))
@@ -318,6 +321,11 @@ class Game():
         if self.player.inventory:
             lastitem = self.player.inventory.pop(0)
             self.player.inventory.append(lastitem)
+        self.update()
+    
+    def onDropClick(self):
+        if self.player.inventory:
+            self.player.drop(self.targetplayeritem)
         self.update()
     
 

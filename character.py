@@ -15,6 +15,9 @@ class Character():
     def showPosition(self):
         print(self.position)
     
+    def getCurrentBiome(self):
+        return self.game.map.getBiomeAt(self.position[0], self.position[1])
+    
 
     def goToPosition(self, x, y):
         map_dimensionX = self.game.map.getMapDimensions()[0]

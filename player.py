@@ -49,25 +49,32 @@ class player(character.Character):
         self.getCurrentBiome().removeItem(item)
         self.game.setOutput(str(item.__class__.__name__) + " Taken!")
     
+    def drop(self, item):
+        if item in self.inventory:
+            self.getCurrentBiome().item.append(item)
+            self.inventory.remove(item)
+    
     def unequipWeapon(self):
         self.inventory.append(self.weapon)
         self.game.setOutput("Unequipped " + str(self.weapon.__class__.__name__))
         self.weapon = None
+        self.damage = self.basedamage
     
     def unequipGear(self):
+        self.gear.undoEffect()
         self.inventory.append(self.gear)
         self.game.setOutput("Unequipped " + str(self.gear.__class__.__name__))
         self.gear = None
     
-    def dropWeapon(self):
-        self.getCurrentBiome().item.append(self.weapon)
-        self.weapon = None
-        self.damage = self.basedamage
+    # def dropWeapon(self):
+    #     self.getCurrentBiome().item.append(self.weapon)
+    #     self.weapon = None
+    #     self.damage = self.basedamage
     
-    def dropGear(self):
-        self.gear.undoEffect()
-        self.getCurrentBiome().item.append(self.gear)
-        self.gear = None
+    # def dropGear(self):
+    #     self.gear.undoEffect()
+    #     self.getCurrentBiome().item.append(self.gear)
+    #     self.gear = None
     
     def goToPosition(self, x, y):
         if self.incombat:
@@ -80,8 +87,7 @@ class player(character.Character):
             else:
                 self.game.setOutput("Map limit reached!")
     
-    def getCurrentBiome(self): #move to character?
-        return self.game.map.getBiomeAt(self.position[0], self.position[1])
+    
     
     def getCurrontBiomeDisplay(self):
         return str(self.getCurrentBiome().getType())
