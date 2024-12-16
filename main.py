@@ -104,6 +104,7 @@ class Game():
         self.playerbiome = tkinter.StringVar()
         self.playerenergy = tkinter.StringVar()
         self.attackcost = tkinter.StringVar()
+        self.stunattackcost = tkinter.StringVar()
 
         self.combatoutput1 = tkinter.StringVar()
         self.combatoutput2 = tkinter.StringVar()
@@ -130,6 +131,10 @@ class Game():
 
         b5 = tkinter.Button(self.gamewindow, textvariable=self.attackcost, command=self.onAttackClick)
         b5.grid(row=5, column=4)
+        
+        b7 = tkinter.Button(self.gamewindow, textvariable=self.stunattackcost, command=self.onStunAttackClick)
+        b7.grid(row=5, column=5)
+
         tkinter.Label(self.gamewindow, textvariable=self.playerenergy).grid(row=9, column=0, columnspan=3)
 
         tkinter.Label(self.gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
@@ -178,6 +183,7 @@ class Game():
         self.playerhealth.set("Health: " + str(self.player.health))
         self.playergear.set("Armor: " + self.player.gear.__class__.__name__)
         self.attackcost.set("Attack! (" + str(self.player.attackcost) + ")")
+        self.stunattackcost.set("Stun & attack! (" + str(self.player.attackcost*5) + ")")
         self.playerbiome.set("Biome: " + str(self.player.getCurrontBiomeDisplay()))
         self.playerenergy.set("Energy: " + str(self.player.energy))
         self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getItemName()))
@@ -194,7 +200,7 @@ class Game():
             for skill in self.player.skills:
                 if self.player.exp > self.player.skills[skill][2] and not self.playerskills[skill][3]:
                     currentskill = skill
-                    skillbutton = tkinter.Button(self.gamewindow, text="Practice " + skill, command=lambda: self.practiceClick(currentskill))
+                    skillbutton = tkinter.Button(self.gamewindow, text="Practice " + skill, command=lambda: self.onPracticeClick(currentskill))
                     print("current skill: ", skill)
                     self.playerskills[currentskill].append(skillbutton)
                     skillbutton.grid(row=self.bottomrow, column=0, columnspan=3)
@@ -244,8 +250,13 @@ class Game():
                 self.player.use(self.player.getCurrentBiome().popItem())
         self.update()
     
-    def practiceClick(self, skill):
+    def onPracticeClick(self, skill):
         self.player.practiceSkill(skill)
+        self.update()
+    
+    def onStunAttackClick(self):
+        if self.player.getCurrentBiome().enemies:
+            self.player.stunAttack(self.targetenemy)
         self.update()
     
     # def onPracticeHealthClick(self):

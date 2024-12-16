@@ -6,17 +6,23 @@ class Enemy(character.Character):
         super().__init__(game)
         self.dodge = 15
         self.damage = 5
+
+        self.stunned = False
     
     def counterAttack(self, player):
         player.recieveAttack(self.damage)
+        self.game.setCombatOutput2(self.__class__.__name__ + " attacked for " + str(self.damage))
     
     def recieveAttack(self, damage):
-        if random.randint(0, 100) <= self.dodge:
+        if self.stunned:
+            self.health -= damage
+            self.stunned = False
+        elif random.randint(0, 100) <= self.dodge:
             self.game.setCombatOutput1(self.__class__.__name__ + " dodged!")
             self.counterAttack(self.game.player)
-            self.game.setCombatOutput2(self.__class__.__name__ + " attacked for " + str(self.damage))
         else:
             self.health -= damage
+            self.counterAttack(self.game.player)
         if self.health <= 0:
             self.isAlive = False
             self.game.onEnemyDeath()

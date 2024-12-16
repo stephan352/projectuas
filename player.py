@@ -67,6 +67,15 @@ class player(character.Character):
     def getCurrontBiomeDisplay(self):
         return str(self.getCurrentBiome().getType())
     
+    def stun(self, opponent):
+        opponent.stunned = True
+    
+    def stunAttack(self, opponent):
+        self.game.setCombatOutput1("Stunned & attacked enemy for " + str(self.damage))
+        self.energy -= self.attackcost*5
+        self.stun(opponent)
+        opponent.recieveAttack(self.damage)
+    
     def attack(self, opponent):
         self.game.setCombatOutput1("Attacked enemy for " + str(self.damage))
         self.energy -= self.attackcost
