@@ -70,6 +70,10 @@ class Game():
         self.output = tkinter.StringVar()
         self.output.set("")
 
+        self.targetfounditem = self.player.getCurrentBiome().getTargetItem()
+        # self.playeritemindex = 0
+        
+
         self.playerskills = self.player.skills.copy()
         for skill in self.playerskills:
             self.playerskills[skill].append(False)
@@ -114,6 +118,8 @@ class Game():
 
         self.itemsfound = tkinter.StringVar()
 
+        self.inventoryitem = tkinter.StringVar()
+
         self.playerexp = tkinter.StringVar()
         self.playerlevel = tkinter.StringVar()
 
@@ -140,8 +146,13 @@ class Game():
         tkinter.Label(self.gamewindow, textvariable=self.playerenergy).grid(row=9, column=0, columnspan=3)
 
         tkinter.Label(self.gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
-        b6 = tkinter.Button(self.gamewindow, text="use", command=self.onUseClick)
+        b6 = tkinter.Button(self.gamewindow, text="take", command=self.onTakeClick)
         b6.grid(row=7, column=4)
+
+        tkinter.Label(self.gamewindow, text="==inventory==").grid(row=8, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.inventoryitem).grid(row=9, column=4)
+        tkinter.Button(self.gamewindow, text=">", command=self.onNextPlayerItemClick).grid(row=10, column=5)
+        tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=10, column=4)
 
         tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=10, column=0, columnspan=3)
 
@@ -180,21 +191,37 @@ class Game():
             self.player.incombat = False
         self.update()
     
-    def check(self):
+    def checkForEnemy(self):
         if self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies here!")
             self.initiateCombat()
 
     def updateHUD(self):
+        if self.player.inventory:
+            self.targetplayeritem = self.player.inventory[0]
+        else:
+            self.targetplayeritem = None
+        
+        if self.player.getCurrentBiome().item:
+            self.targetfounditem = self.player.getCurrentBiome().getTargetItem()
+        else:
+            self.targetfounditem = None
+
         self.playerhealth.set("Health: " + str(self.player.health))
         self.playergear.set("Armor: " + self.player.gear.__class__.__name__)
+
         self.attackcost.set("Attack! (" + str(self.player.attackcost) + ")")
         self.stunattackcost.set("Stun & attack! (" + str(self.player.attackcost*5) + ")")
+
         self.playerbiome.set("Biome: " + str(self.player.getCurrontBiomeDisplay()))
         self.playerenergy.set("Energy: " + str(self.player.energy))
-        self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getItemName()))
+
+        self.itemsfound.set("Found " + str(self.targetfounditem.__class__.__name__))
+
         self.playerexp.set("Exp: " + str(self.player.exp))
         self.playerlevel.set("Level: " + str(self.player.level))
+
+        self.inventoryitem.set(str(self.targetplayeritem.__class__.__name__))
 
         self.enemiesremaining.set("Enemies left: " + str(len(self.enemies)))
         if self.player.getCurrentBiome().enemies:
@@ -216,7 +243,8 @@ class Game():
                     self.bottomrow += 1
     
     def update(self):
-        print(self.enemies)
+        print("Items found: ", self.player.getCurrentBiome().item)
+        print("Inventory: ", self.player.inventory)
         if self.player.health <= 0:
             self.setOutput("You died! Game over")
             for button in self.buttons:
@@ -228,7 +256,7 @@ class Game():
                 button.destroy()
             tkinter.Button(self.gamewindow, text="NEW GAME", command=self.startGame).grid(row=self.bottomrow, column=0, columnspan=3)
         if not self.player.incombat:
-            self.check()
+            self.checkForEnemy()
         self.updateScreen()
         self.updateHUD()
     
@@ -255,12 +283,18 @@ class Game():
         self.update()
     
     def onUseClick(self):
-        itemsfound = self.player.getCurrentBiome().item
-        if itemsfound:
+        if self.player.inventory:
             if self.player.incombat:
-                self.setOutput("Don't eat with enemy!")
+                self.setOutput("Cannot use in combat!")
             else:
-                self.player.use(self.player.getCurrentBiome().popItem())
+                self.player.use(self.targetplayeritem)
+
+        # itemsfound = self.player.getCurrentBiome().item
+        # if itemsfound:
+        #     if self.player.incombat:
+        #         self.setOutput("Don't eat with enemy!")
+        #     else:
+        #         self.player.use(self.player.getCurrentBiome().popItem())
         self.update()
     
     def onPracticeClick(self, skill):
@@ -272,13 +306,20 @@ class Game():
             self.player.stunAttack(self.targetenemy)
         self.update()
     
-    # def onPracticeHealthClick(self):
-    #     self.player.practiceSkill("BetterHealth")
-    #     self.update()
+    def onTakeClick(self): #cannot take in combat
+        if self.player.getCurrentBiome().item:
+            if self.player.incombat:
+                self.setOutput("Cannot take in combat!")
+            else:
+                self.player.take(self.targetfounditem)
+        self.update()
     
-    # def onPracticeAttackClick(self):
-    #     self.player.practiceSkill("BetterAttack")
-    #     self.update()
+    def onNextPlayerItemClick(self):
+        if self.player.inventory:
+            lastitem = self.player.inventory.pop(0)
+            self.player.inventory.append(lastitem)
+        self.update()
+    
 
 
 root = tkinter.Tk()

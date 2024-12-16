@@ -9,6 +9,7 @@ class player(character.Character):
         self.icon = "🏃"
         self.incombat = False
 
+        self.inventory = []
         self.weapon = None
         self.gear = None
 
@@ -27,18 +28,36 @@ class player(character.Character):
     def use(self, item):
         if issubclass(item.__class__, items.Weapon):
             if self.weapon:
-                self.dropWeapon()
+                self.unequipWeapon()
             self.weapon = item
             self.damage = item.damage
             self.game.setOutput("Used " + str(item.__class__.__name__))
         elif issubclass(item.__class__, items.Gear):
             if self.gear:
-                self.dropGear()
+                self.unequipGear()
             self.gear = item
             item.useEffect()
             self.game.setOutput("Used " + str(item.__class__.__name__))
         elif issubclass(item.__class__, food.Food):
             self.eat(item)
+        
+        if item in self.inventory:
+                self.inventory.remove(item)
+    
+    def take(self, item):
+        self.inventory.append(item)
+        self.getCurrentBiome().removeItem(item)
+        self.game.setOutput(str(item.__class__.__name__) + " Taken!")
+    
+    def unequipWeapon(self):
+        self.inventory.append(self.weapon)
+        self.game.setOutput("Unequipped " + str(self.weapon.__class__.__name__))
+        self.weapon = None
+    
+    def unequipGear(self):
+        self.inventory.append(self.gear)
+        self.game.setOutput("Unequipped " + str(self.gear.__class__.__name__))
+        self.gear = None
     
     def dropWeapon(self):
         self.getCurrentBiome().item.append(self.weapon)
@@ -61,7 +80,7 @@ class player(character.Character):
             else:
                 self.game.setOutput("Map limit reached!")
     
-    def getCurrentBiome(self):
+    def getCurrentBiome(self): #move to character?
         return self.game.map.getBiomeAt(self.position[0], self.position[1])
     
     def getCurrontBiomeDisplay(self):

@@ -24,6 +24,12 @@ class Biome():
                 possibleenemies.append(enemytype)
         return possibleenemies
     
+    def getTargetItem(self):
+        if self.item:
+            return self.item[0]
+        else:
+            return None
+    
     def getItemName(self):
         if self.item:
             return self.item[0].__class__.__name__
@@ -66,6 +72,12 @@ class Biome():
     
     def popItem(self):
         return self.item.pop(0)
+    
+    def removeItem(self, item):
+        try:
+            self.item.remove(item)
+        except ValueError:
+            pass
 
 class Desert(Biome):
     def __init__(self, game):
