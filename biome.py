@@ -1,6 +1,7 @@
 import enemy
 import random
 import food
+import items
 
 class Biome():
     def __init__(self, game):
@@ -8,7 +9,7 @@ class Biome():
         self.position = [0,0] #blm selesai
         self.icon = ""
         self.enemies = self.generateEnemies()
-        self.item = self.generateFood()
+        self.item = self.generateItems()
     
     def getType(self):
         return self.__class__.__name__
@@ -23,7 +24,7 @@ class Biome():
                 possibleenemies.append(enemytype)
         return possibleenemies
     
-    def getFoodName(self):
+    def getItemName(self):
         if self.item:
             return self.item[0].__class__.__name__
         else:
@@ -47,13 +48,20 @@ class Biome():
                 possiblefoods.append(foodtype)
         return possiblefoods
     
-    def generateFood(self):
-        if random.randint(0, 100) < 15:
-            return [random.choice(self.getPossibleFoods())()]
-        else:
-            return []
+    def generateItems(self):
+        items = []
+        if random.randint(0, 100) < 95:
+            items.append(random.choice(self.getPossibleFoods())(self.game))
+        if random.randint(0, 100) < 95:
+            items.append(random.choice(self.getPossibleItems())(self.game))
+        return items
     
-    def popFood(self):
+    def getPossibleItems(self):
+        possibleGears = items.gearTypes.copy()
+        possibleWeapons = items.weaponTypes.copy()
+        return possibleGears + possibleWeapons
+    
+    def popItem(self):
         return self.item.pop(0)
 
 class Desert(Biome):

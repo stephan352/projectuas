@@ -1,4 +1,6 @@
 import character
+import items
+import food
 
 class player(character.Character):
     def __init__(self, game):
@@ -7,14 +9,46 @@ class player(character.Character):
         self.icon = "🏃"
         self.incombat = False
 
-        self.damage = 20
+        self.weapon = None
+        self.gear = None
+
+        self.basedamage = 5
+        self.damage = self.basedamage
         self.energy = 1000
-        self.attackcost = 20
+        self.attackcost = 5
+
+        self.armor = 0
 
         self.exp = 0
         self.level = 1
 
         self.skills = {"BetterAttack": [False, self.practiceBetterAttack, 100], "BetterHealth":[False, self.practiceBetterHealth, 200]}
+    
+    def use(self, item):
+        if issubclass(item.__class__, items.Weapon):
+            if self.weapon:
+                self.dropWeapon()
+            self.weapon = item
+            self.damage = item.damage
+            self.game.setOutput("Used " + str(item.__class__.__name__))
+        elif issubclass(item.__class__, items.Gear):
+            if self.gear:
+                self.dropGear()
+            self.gear = item
+            item.useEffect()
+            self.game.setOutput("Used " + str(item.__class__.__name__))
+        elif issubclass(item.__class__, food.Food):
+            self.eat(item)
+    
+    def dropWeapon(self):
+        self.getCurrentBiome().item.append(self.weapon)
+        self.weapon = None
+        self.damage = self.basedamage
+    
+    def dropGear(self):
+        self.gear.undoEffect()
+        self.getCurrentBiome().item.append(self.gear)
+        self.gear = None
     
     def goToPosition(self, x, y):
         if self.incombat:
@@ -38,8 +72,13 @@ class player(character.Character):
         self.energy -= self.attackcost
         opponent.recieveAttack(self.damage)
     
+    def recieveAttack(self, damage):
+        self.health -= damage - self.armor
+        if self.health <= 0:
+            self.isAlive = False
+    
     def eat(self, food):
-        self.health += food.regenerate
+        food.useEffect()
         self.game.setOutput(food.__class__.__name__ + " eaten!")
     
     def practiceSkill(self, skill):

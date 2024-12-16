@@ -57,7 +57,7 @@ class Game():
     
     def startGame(self):
         # self.enemies = []
-        self.bottomrow = 12
+        self.bottomrow = 15
         size = self.selectedsize.get()
         if size == "small":
             self.map = map.Map(self, 20, 50)
@@ -90,10 +90,15 @@ class Game():
         
         tkinter.Label(self.gamewindow, textvariable=self.output).grid(row=2, column=0, columnspan=3)
 
-        tkinter.Button(self.gamewindow, text="Left", command=self.onLeftClick).grid(row=4, column=0)
-        tkinter.Button(self.gamewindow, text="Right", command=self.onRightClick).grid(row=4, column=2)
-        tkinter.Button(self.gamewindow, text="Up", command=self.onUpClick).grid(row=3, column=1)
-        tkinter.Button(self.gamewindow, text="Down", command=self.onDownClick).grid(row=5, column=1)
+        b1 = tkinter.Button(self.gamewindow, text="Left", command=self.onLeftClick)
+        b2 = tkinter.Button(self.gamewindow, text="Right", command=self.onRightClick)
+        b3 = tkinter.Button(self.gamewindow, text="Up", command=self.onUpClick)
+        b4 = tkinter.Button(self.gamewindow, text="Down", command=self.onDownClick)
+
+        b1.grid(row=4, column=0)
+        b2.grid(row=4, column=2)
+        b3.grid(row=3, column=1)
+        b4.grid(row=5, column=1)
 
         self.playerhealth = tkinter.StringVar()
         self.playerbiome = tkinter.StringVar()
@@ -111,8 +116,11 @@ class Game():
         self.playerexp = tkinter.StringVar()
         self.playerlevel = tkinter.StringVar()
 
+        self.playergear = tkinter.StringVar()
+
         tkinter.Label(self.gamewindow, textvariable=self.playerhealth).grid(row=6, column=0, columnspan=3)
-        tkinter.Label(self.gamewindow, textvariable=self.playerbiome).grid(row=7, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.playergear).grid(row=7, column=0, columnspan=3)
+        tkinter.Label(self.gamewindow, textvariable=self.playerbiome).grid(row=8, column=0, columnspan=3)
 
         tkinter.Label(self.gamewindow, textvariable=self.combatoutput1).grid(row=1, column=4)
         tkinter.Label(self.gamewindow, textvariable=self.combatoutput2).grid(row=2, column=4)
@@ -120,14 +128,19 @@ class Game():
         tkinter.Label(self.gamewindow, textvariable=self.enemiesleft).grid(row=3, column=4)
         tkinter.Label(self.gamewindow, textvariable=self.enemyhealth).grid(row=4, column=4)
 
-        tkinter.Button(self.gamewindow, textvariable=self.attackcost, command=self.onAttackClick).grid(row=5, column=4)
-        tkinter.Label(self.gamewindow, textvariable=self.playerenergy).grid(row=8, column=0, columnspan=3)
+        b5 = tkinter.Button(self.gamewindow, textvariable=self.attackcost, command=self.onAttackClick)
+        b5.grid(row=5, column=4)
+        tkinter.Label(self.gamewindow, textvariable=self.playerenergy).grid(row=9, column=0, columnspan=3)
 
         tkinter.Label(self.gamewindow, textvariable=self.itemsfound).grid(row=6, column=4)
-        tkinter.Button(self.gamewindow, text="use", command=self.onUseClick).grid(row=7, column=4)
+        b6 = tkinter.Button(self.gamewindow, text="use", command=self.onUseClick)
+        b6.grid(row=7, column=4)
 
-        tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=9, column=0)
-        tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=10, column=0)
+        tkinter.Label(self.gamewindow, textvariable=self.playerexp).grid(row=10, column=0, columnspan=3)
+
+        tkinter.Label(self.gamewindow, textvariable=self.playerlevel).grid(row=11, column=0, columnspan=3)
+
+        self.buttons = (b1, b2, b3, b4, b5, b6)
         
 
         self.update()
@@ -163,10 +176,11 @@ class Game():
 
     def updateHUD(self):
         self.playerhealth.set("Health: " + str(self.player.health))
+        self.playergear.set("Armor: " + self.player.gear.__class__.__name__)
         self.attackcost.set("Attack! (" + str(self.player.attackcost) + ")")
         self.playerbiome.set("Biome: " + str(self.player.getCurrontBiomeDisplay()))
         self.playerenergy.set("Energy: " + str(self.player.energy))
-        self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getFoodName()))
+        self.itemsfound.set("Found " + str(self.player.getCurrentBiome().getItemName()))
         self.playerexp.set("Exp: " + str(self.player.exp))
         self.playerlevel.set("Level: " + str(self.player.level))
         if self.player.getCurrentBiome().enemies:
@@ -188,7 +202,12 @@ class Game():
                     self.bottomrow += 1
     
     def update(self):
-        print(self.map.getBiomeAt(self.player.getPosition()[0], self.player.getPosition()[1]).enemies)
+        print(self.player.getCurrentBiome().item)
+        if self.player.health <= 0:
+            self.setOutput("You died! Game over")
+            for button in self.buttons:
+                button.destroy()
+            tkinter.Button(self.gamewindow, text="NEW GAME", command=self.startGame).grid(row=self.bottomrow, column=0, columnspan=3)
         if not self.player.incombat:
             self.check()
         self.updateScreen()
@@ -222,7 +241,7 @@ class Game():
             if self.player.incombat:
                 self.setOutput("Don't eat with enemy!")
             else:
-                self.player.eat(self.player.getCurrentBiome().popFood())
+                self.player.use(self.player.getCurrentBiome().popItem())
         self.update()
     
     def practiceClick(self, skill):

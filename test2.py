@@ -1,6 +1,10 @@
-x = {"a":2, "b":3}
+class Animal():
+    def __init__(self):
+        pass
 
-if 2 in x:
-    print(True)
-else:
-    print(False)
+class Cat(Animal):
+    def __init__(self):
+        super().__init__()
+
+x = Cat()
+print(issubclass(x.__class__, Animal))
