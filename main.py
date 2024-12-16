@@ -188,8 +188,6 @@ class Game():
         self.player.gainExp(20)
         if not self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies cleared!")
-            # self.setCombatOutput1("-")
-            # self.setCombatOutput2("-")
             self.player.incombat = False
         self.update()
     
@@ -246,8 +244,7 @@ class Game():
                     self.bottomrow += 1
     
     def update(self):
-        print("Items found: ", self.player.getCurrentBiome().item)
-        print("Inventory: ", self.player.inventory)
+        print("debug line")
         if self.player.health <= 0:
             self.setOutput("You died! Game over")
             for button in self.buttons:
@@ -291,13 +288,6 @@ class Game():
                 self.setOutput("Cannot use in combat!")
             else:
                 self.player.use(self.targetplayeritem)
-
-        # itemsfound = self.player.getCurrentBiome().item
-        # if itemsfound:
-        #     if self.player.incombat:
-        #         self.setOutput("Don't eat with enemy!")
-        #     else:
-        #         self.player.use(self.player.getCurrentBiome().popItem())
         self.update()
     
     def onPracticeClick(self, skill):
@@ -309,7 +299,7 @@ class Game():
             self.player.stunAttack(self.targetenemy)
         self.update()
     
-    def onTakeClick(self): #cannot take in combat
+    def onTakeClick(self):
         if self.player.getCurrentBiome().item:
             if self.player.incombat:
                 self.setOutput("Cannot take in combat!")

@@ -59,9 +59,9 @@ class Biome():
     
     def generateItems(self):
         items = []
-        if random.randint(0, 100) < 95:
+        if random.randint(0, 100) < 20:
             items.append(random.choice(self.getPossibleFoods())(self.game))
-        if random.randint(0, 100) < 95:
+        if random.randint(0, 100) < 20:
             items.append(random.choice(self.getPossibleItems())(self.game))
         return items
     

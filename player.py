@@ -13,7 +13,7 @@ class player(character.Character):
         self.weapon = None
         self.gear = None
 
-        self.basedamage = 5
+        self.basedamage = 6
         self.damage = self.basedamage
         self.energy = 1000
         self.attackcost = 5
@@ -65,16 +65,6 @@ class player(character.Character):
         self.inventory.append(self.gear)
         self.game.setOutput("Unequipped " + str(self.gear.__class__.__name__))
         self.gear = None
-    
-    # def dropWeapon(self):
-    #     self.getCurrentBiome().item.append(self.weapon)
-    #     self.weapon = None
-    #     self.damage = self.basedamage
-    
-    # def dropGear(self):
-    #     self.gear.undoEffect()
-    #     self.getCurrentBiome().item.append(self.gear)
-    #     self.gear = None
     
     def goToPosition(self, x, y):
         if self.incombat:
