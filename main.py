@@ -198,6 +198,11 @@ class Game():
         if self.player.getCurrentBiome().enemies:
             self.setOutput("Enemies here!")
             self.initiateCombat()
+            if self.player.energy < 5:
+                self.setOutput("You died! Game over")
+                for button in self.buttons:
+                    button.destroy()
+                tkinter.Button(self.gamewindow, text="NEW GAME", command=self.startGame).grid(row=self.bottomrow, column=0, columnspan=3)
 
     def updateHUD(self):
         if self.player.inventory:
@@ -374,6 +379,7 @@ class Game():
     def onStunAttackClick(self):
         if self.player.getCurrentBiome().enemies:
             self.player.stunAttack(self.targetenemy)
+        self.setCombatOutput2("-")
         self.update()
     
     def onTakeClick(self):

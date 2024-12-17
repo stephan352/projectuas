@@ -37,3 +37,4 @@ class KitchenKnife(Weapon):
 
 weaponTypes = Weapon.__subclasses__()
 gearTypes = Gear.__subclasses__()
+print(gearTypes)

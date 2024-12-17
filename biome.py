@@ -62,8 +62,9 @@ class Biome():
         items = []
         if random.randint(0, 100) < 20:
             items.append(random.choice(self.getPossibleFoods())(self.game))
-        if random.randint(0, 100) < 20:
+        if random.randint(0, 100) < 30:
             items.append(random.choice(self.getPossibleItems())(self.game))
+            print(self.getPossibleItems())
         return items
     
     def getPossibleItems(self):
@@ -81,7 +82,7 @@ class Biome():
             pass
     
     def generateMerchant(self):
-        if random.randint(0, 100) < 5:
+        if random.randint(0, 100) < 20:
             return merchant.Merchant(self.game)
         else:
             return None
