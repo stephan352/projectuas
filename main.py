@@ -293,7 +293,7 @@ class Game():
             elif self.merchantHUD:
                 self.removeMerchantHUD()
                 
-        self.updateScreen()
+        # self.updateScreen()
         self.updateHUD()
     
     def generateMerchantHUD(self):
@@ -361,18 +361,22 @@ class Game():
     def onLeftClick(self):
         self.player.goLeft()
         self.update()
+        self.updateScreen()
     
     def onRightClick(self):
         self.player.goRight()
         self.update()
+        self.updateScreen()
     
     def onUpClick(self):
         self.player.goUp()
         self.update()
+        self.updateScreen()
     
     def onDownClick(self):
         self.player.goDown()
         self.update()
+        self.updateScreen()
     
     def onAttackClick(self):
         if self.player.getCurrentBiome().enemies:
