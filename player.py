@@ -7,6 +7,7 @@ class player(character.Character):
         super().__init__(game)
         self.position = [0,0]
         self.icon = "🏃"
+        self.imagesrc = "boy.png"
         self.incombat = False
 
         self.inventory = []

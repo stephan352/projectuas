@@ -90,22 +90,26 @@ class Biome():
 class Desert(Biome):
     def __init__(self, game):
         super().__init__(game)
-        self.icon = "🏜️"      
+        self.icon = "🏜️"
+        self.imagesrc = "meadow.png"
 
 class Jungle(Biome):
     def __init__(self, game):
         super().__init__(game)
         self.icon = "🌴"
+        self.imagesrc = "meadow.png"
 
 class Meadow(Biome):
     def __init__(self, game):
         super().__init__(game)
         self.icon = "🏞️"
+        self.imagesrc = "meadow.png"
 
 class Tundra(Biome):
     def __init__(self, game):
         super().__init__(game)
         self.icon = "❄️"
+        self.imagesrc = "meadow.png"
 
 
 biomeTypes = Biome.__subclasses__()

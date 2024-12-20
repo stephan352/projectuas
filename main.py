@@ -5,7 +5,8 @@ import tkinter
 
 
 class Game():
-    def __init__(self, root):
+    def __init__(self, root, sourceimages):
+        self.sourceimages = sourceimages
         self.root = root
         self.initRoot()
  
@@ -17,9 +18,9 @@ class Game():
         display_grid = self.map.getMap()
         player_position = self.player.getPosition()
         display_grid[player_position[1]][player_position[0]] = self.player
-        return [[element.getIcon() for element in row] for row in display_grid]
+        return display_grid
     
-    def getCroppedScreenTuple(self):
+    def getCroppedScreen(self):
         playerXposition = self.player.getPosition()[0]
         playerYposition = self.player.getPosition()[1]
         if playerXposition < 5:
@@ -36,13 +37,25 @@ class Game():
         else:
             cropped = croppedX[playerYposition - 4:playerYposition + 5]
         
-        return tuple(cropped)
+        return cropped
     
-    def updateScreen(self):
-        self.table.delete(*self.table.get_children())
-        croppedScreen = self.getCroppedScreenTuple()
+    def generateScreenTopLevel(self):
+        self.screenwindow = tkinter.Toplevel()
+        self.screenwindow.geometry("+%d+%d" % (self.gamewindow.winfo_x() + 350, self.gamewindow.winfo_y()))
+        croppedScreen = self.getCroppedScreen()
+        rowindex = 0
         for row in croppedScreen:
-            self.table.insert(parent="", index=tkinter.END, values=row)
+            columnindex = 0
+            for element in row:
+                photo = self.sourceimages[element.imagesrc]
+                label = tkinter.Label(self.screenwindow, image=photo)
+                label.grid(row=rowindex, column=columnindex)
+                columnindex += 1
+            rowindex += 1
+
+    def updateScreen(self):
+        self.screenwindow.destroy()
+        self.generateScreenTopLevel()
         
     
     def initRoot(self):
@@ -65,7 +78,6 @@ class Game():
             self.map = map.Map(self, 50, 50)
         elif size == "large":
             self.map = map.Map(self, 100, 100)
-        print("Map dimensions: ", self.map.getMapDimensions())
         self.player = self.initPlayer()
         self.output = tkinter.StringVar()
         self.output.set("")
@@ -79,18 +91,24 @@ class Game():
             self.playerskills[skill].append(False)
         
         self.gamewindow = tkinter.Toplevel()
-        screenframe = tkinter.Frame(self.gamewindow)
-        screenframe.grid(row=0,column=0,columnspan=3)
-        map_columns = tuple([str(i) for i in range(9)])
-        self.table = tkinter.ttk.Treeview(screenframe, columns= map_columns, show="tree")
+        self.gamewindow.geometry("+%d+%d" % (100, 200))
 
-        self.table.column("#0", minwidth=0, width=0)
-        self.table.pack()
-        for column_element in map_columns:
-            self.table.column(column_element, width=20)
-        croppedScreen = self.getCroppedScreenTuple()
-        for row in croppedScreen:
-            self.table.insert(parent="", index=tkinter.END, values=row)
+
+        
+        self.generateScreenTopLevel()
+
+        # screenframe = tkinter.Frame(self.gamewindow)
+        # screenframe.grid(row=0,column=0,columnspan=3)
+        # map_columns = tuple([str(i) for i in range(9)])
+        # self.table = tkinter.ttk.Treeview(screenframe, columns= map_columns, show="tree")
+
+        # self.table.column("#0", minwidth=0, width=0)
+        # self.table.pack()
+        # for column_element in map_columns:
+        #     self.table.column(column_element, width=20)
+        # croppedScreen = self.getCroppedScreenTuple()
+        # for row in croppedScreen:
+        #     self.table.insert(parent="", index=tkinter.END, values=row)
         
         tkinter.Label(self.gamewindow, textvariable=self.output).grid(row=2, column=0, columnspan=3)
 
@@ -256,9 +274,6 @@ class Game():
                     self.bottomrow += 1
     
     def update(self):
-        if self.player.getCurrentBiome().merchant:
-            print("inventory: ", self.player.getCurrentBiome().merchant.inventory)
-            print("prices: ", self.player.getCurrentBiome().merchant.prices)
         if self.player.health <= 0:
             self.setOutput("You died! Game over")
             for button in self.buttons:
@@ -430,5 +445,11 @@ class Game():
 
 
 root = tkinter.Tk()
-maingame = Game(root)
+
+image_boy = tkinter.PhotoImage(file="boy.png")
+image_meadow = tkinter.PhotoImage(file="meadow.png")
+
+images = {"meadow.png": image_meadow, "boy.png": image_boy}
+
+maingame = Game(root, images)
 root.mainloop()
