@@ -448,8 +448,11 @@ root = tkinter.Tk()
 
 image_boy = tkinter.PhotoImage(file="boy.png")
 image_meadow = tkinter.PhotoImage(file="meadow.png")
+image_tundra = tkinter.PhotoImage(file="tundra.png")
+image_jungle = tkinter.PhotoImage(file="jungle.png")
+image_desert = tkinter.PhotoImage(file="desert.png")
 
-images = {"meadow.png": image_meadow, "boy.png": image_boy}
+images = {"meadow.png": image_meadow, "boy.png": image_boy, "tundra.png": image_tundra, "jungle.png": image_jungle, "desert.png": image_desert}
 
 maingame = Game(root, images)
 root.mainloop()
